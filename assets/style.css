@@ -1,0 +1,712 @@
+/* ── RESET & TOKENS ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --fire:#FF4500;  --gold:#FFB800;  --cream:#FFF8EE;
+  --dark:#080604;  --smoke:#0D0A06; --spice:#C8410A;
+  --amber:#FF8C00;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* ── CUSTOM CURSOR ── */
+#cur{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .15s,height .15s;}
+#cur-r{position:fixed;width:36px;height:36px;border:1.5px solid rgba(255,184,0,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease;}
+
+/* ── SCROLL PROGRESS BAR ── */
+#bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--fire),var(--gold));z-index:1000;width:0%;}
+
+/* ════════════════════════════════════════════
+   NAV
+   ════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.6rem 3.5rem;
+  transition:background .5s,backdrop-filter .5s,padding .4s;
+}
+nav.scrolled{
+  background:rgba(8,6,4,.92);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,184,0,.08);
+  padding:1rem 3.5rem;
+}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.06em;color:var(--gold);}
+.logo span{color:var(--fire);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{
+  color:rgba(255,248,238,.55);text-decoration:none;
+  font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  transition:color .2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .25s ease;
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-btn{
+  background:transparent;color:var(--cream);
+  border:1px solid rgba(255,184,0,.4);
+  padding:.6rem 1.6rem;font-family:'DM Sans',sans-serif;
+  font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;
+  cursor:none;transition:all .25s;
+}
+.nav-btn:hover{background:var(--fire);border-color:var(--fire);color:var(--cream);transform:scale(1.04);box-shadow:0 0 28px rgba(255,69,0,.3);}
+
+/* ════════════════════════════════════════════
+   HERO — FULL BG LAYOUT (texts on left overlay)
+   ════════════════════════════════════════════ */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--dark);
+}
+
+/* ── BACKGROUND IMAGE (with headroom for vertical scroll parallax) ── */
+.hero-bg {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  background: url('hero_backround.png') center right / cover no-repeat;
+  z-index: 1;
+  will-change: transform;
+}
+
+/* ── PREMIUM DARK GRADIENT OVERLAY ── */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  /* Left-heavy gradient for high contrast readability, fading gracefully to show the chicken on the right */
+  background: linear-gradient(
+    90deg,
+    rgba(8, 6, 4, 0.94) 0%,
+    rgba(8, 6, 4, 0.88) 35%,
+    rgba(8, 6, 4, 0.55) 60%,
+    rgba(8, 6, 4, 0.15) 85%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Blend bottom cleanly into the dark marquee section */
+  background: linear-gradient(
+    0deg,
+    rgba(8, 6, 4, 1) 0%,
+    rgba(8, 6, 4, 0) 30%
+  );
+  z-index: 1;
+}
+
+/* ── TEXT CONTENT (LEFT SIDE ALIGNED) ── */
+.hero-content {
+  position: relative;
+  z-index: 10;
+  padding: 0 8vw;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: -3.5rem; /* offset upward slightly for vertical visual balance with stats */
+}
+
+/* Eyebrow */
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fadeUp 0.6s ease 0.2s forwards;
+}
+.ew-line {
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+.hero-eyebrow span {
+  font-size: 0.62rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* Headline - premium bold branding */
+.hero-h {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.2rem, 5vw, 5.5rem);
+  line-height: 0.88;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.hero-h .line-wrap {
+  overflow: hidden;
+  display: block;
+}
+.hero-h .line-inner {
+  display: block;
+  opacity: 0;
+  transform: translateY(105%);
+}
+.hero-h .line-wrap:nth-child(1) .line-inner { animation: slideUp 0.85s cubic-bezier(.16,1,.3,1) 0.3s forwards; }
+.hero-h .line-wrap:nth-child(2) .line-inner { animation: slideUp 0.85s cubic-bezier(.16,1,.3,1) 0.45s forwards; }
+.hero-h .line-wrap:nth-child(3) .line-inner { animation: slideUp 0.85s cubic-bezier(.16,1,.3,1) 0.6s forwards; }
+.hero-h .fire {
+  color: var(--fire);
+  text-shadow: 0 0 40px rgba(255, 69, 0, 0.7);
+}
+.hero-h .gold {
+  color: var(--gold);
+  text-shadow: 0 0 35px rgba(255, 184, 0, 0.6);
+}
+
+/* Accent Divider */
+.hero-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--fire), var(--gold));
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.75s forwards;
+}
+
+/* Description */
+.hero-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 248, 238, 0.72);
+  line-height: 1.8;
+  max-width: 480px;
+  font-weight: 300;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.6s ease 0.8s forwards;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* extra readability */
+}
+
+/* CTA Row */
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.95s forwards;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--fire);
+  color: var(--cream);
+  padding: 0.8rem 2.2rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: translateX(-101%);
+  transition: transform 0.3s ease;
+}
+.btn-primary span {
+  position: relative;
+  z-index: 1;
+}
+.btn-primary:hover::before {
+  transform: translateX(0);
+}
+.btn-primary:hover {
+  color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 69, 0, 0.4);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 238, 0.6);
+  text-decoration: none;
+  border: 1px solid rgba(255, 248, 238, 0.15);
+  padding: 0.72rem 1.4rem;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.btn-ghost:hover {
+  color: var(--gold);
+  border-color: rgba(255, 184, 0, 0.4);
+  background: rgba(255, 248, 238, 0.03);
+}
+
+/* ── GLASSMORPHIC STATS STRIP ── */
+.hero-stats {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  background: rgba(8, 6, 4, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 184, 0, 0.1);
+  opacity: 0;
+  animation: fadeUp 0.6s ease 1.1s forwards;
+}
+.stat {
+  flex: 1;
+  padding: 1.2rem 2rem;
+  border-right: 1px solid rgba(255, 184, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  transition: background 0.25s, transform 0.25s;
+}
+.stat:last-child {
+  border-right: none;
+}
+.stat:hover {
+  background: rgba(255, 184, 0, 0.04);
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.stat-lbl {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 238, 0.4);
+}
+
+/* ── KEYFRAME ANIMATIONS ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(105%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ────── MARQUEE ────── */
+.mq-wrap{background:var(--fire);overflow:hidden;padding:.6rem 0;white-space:nowrap;}
+.mq-track{display:inline-flex;animation:mq 24s linear infinite;}
+.mq-track span{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.2em;color:var(--cream);padding:0 2rem;}
+.mq-track span::after{content:'🔥';margin-left:1rem;}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ════════════════════════════════════════════
+   MARQUEE DIVIDER
+   ════════════════════════════════════════════ */
+.mq-wrap{
+  background:var(--fire);overflow:hidden;padding:.65rem 0;white-space:nowrap;
+  border-top:1px solid rgba(255,184,0,.15);
+}
+.mq-track{display:inline-flex;animation:mq 24s linear infinite;}
+.mq-track span{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;
+  letter-spacing:.2em;color:var(--cream);padding:0 2.4rem;
+}
+.mq-track span::after{content:'🔥';margin-left:1.2rem;}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ════════════════════════════════════════════
+   SCROLL STORY — The Process (GSAP-powered)
+   ════════════════════════════════════════════ */
+#story { position: relative; height: 600vh; }
+#sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+
+canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* ── Directional Vignette — bottom-heavy, keeps center bright ── */
+#vignette {
+  position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  background:
+    linear-gradient(to top, rgba(8,6,4,0.88) 0%, rgba(8,6,4,0.45) 22%, transparent 42%),
+    linear-gradient(to right, rgba(8,6,4,0.35) 0%, transparent 18%),
+    linear-gradient(to bottom, rgba(8,6,4,0.3) 0%, transparent 12%);
+}
+
+/* ── Scene Text Containers ── */
+.scene-text {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 5;
+  opacity: 1; /* GSAP controls child visibility, not container */
+}
+
+/* Zone C — bottom-left text block */
+.zone-c {
+  position: absolute;
+  bottom: 6rem;
+  left: 6vw;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Zone D — bottom-right secondary content */
+.zone-d {
+  position: absolute;
+  bottom: 6rem;
+  right: 6vw;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.8rem;
+}
+
+/* Zone A — top-left chapter tag */
+.zone-a {
+  position: absolute;
+  top: 5rem;
+  left: 6vw;
+}
+
+/* ── Chapter Tag ── */
+.st-tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0; /* GSAP will animate */
+}
+.st-tag::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+/* ── Scene Headline ── */
+.st-h {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.2rem, 7vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.6rem;
+  color: var(--cream);
+  text-shadow: 0 4px 40px rgba(8, 6, 4, 0.9);
+}
+.st-h .word {
+  display: inline-block;
+  margin-right: 0.15em;
+  vertical-align: top;
+}
+.st-h .word-inner {
+  display: inline-block;
+  opacity: 0; /* GSAP will animate */
+}
+
+/* Premium clean accent classes (replacing harsh red/yellow) */
+.f {
+  color: var(--cream);
+  text-shadow: 0 4px 30px rgba(8, 6, 4, 0.9);
+}
+.g {
+  color: rgba(255, 235, 190, 1); /* Very soft, premium pale gold */
+  text-shadow: 0 4px 30px rgba(8, 6, 4, 0.9);
+}
+
+/* ── Subline ── */
+.st-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(0.92rem, 1.3vw, 1.1rem);
+  color: rgba(255, 248, 238, 0.6);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
+  text-shadow: 0 2px 20px rgba(8, 6, 4, 0.9);
+  opacity: 0; /* GSAP will animate */
+  filter: blur(6px);
+}
+
+/* ── Quote Block ── */
+.st-quote {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.25rem); /* Larger font size */
+  color: var(--gold); /* Text yellow */
+  font-style: italic;
+  font-weight: 500; /* Bolder font weight */
+  line-height: 1.8;
+  max-width: 300px;
+  padding: 1rem 1.4rem;
+  background: rgba(8, 6, 4, 0.85); /* Dark fade, less transparent */
+  border-right: 2px solid rgba(255, 184, 0, 0.6);
+  border-top: 1px solid rgba(255, 184, 0, 0.15);
+  text-shadow: 0 2px 16px rgba(8, 6, 4, 1);
+  opacity: 0; /* GSAP will animate */
+}
+.st-quote::before {
+  content: '"';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 0.6;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* ── Pillar Tags (floating pills) ── */
+.st-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+.pillar {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem; /* Larger font size */
+  font-weight: 600; /* Bolder font weight */
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 184, 0, 0.9); /* Brighter yellow */
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgba(255, 184, 0, 0.2);
+  background: rgba(8, 6, 4, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+  opacity: 0; /* GSAP will animate */
+  transform: scale(0.8);
+}
+
+/* ── Chapter Bar (Removed) ── */
+
+/* ── Progress Dots ── */
+#dots { position: fixed; right: 2rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.8rem; z-index: 200; pointer-events: none; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,248,238,0.15); transition: background 0.3s, transform 0.3s, box-shadow 0.3s; }
+.dot.active { background: var(--gold); transform: scale(1.5); box-shadow: 0 0 12px rgba(255,184,0,0.65); }
+
+/* ── Scroll Hint ── */
+#scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  pointer-events: none; transition: opacity 0.4s; z-index: 10;
+}
+#scroll-hint span { font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,248,238,0.4); }
+.arr { width: 16px; height: 16px; border-right: 1px solid rgba(255,248,238,0.3); border-bottom: 1px solid rgba(255,248,238,0.3); transform: rotate(45deg); animation: ab 1.1s ease-in-out infinite; }
+@keyframes ab { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(5px); } }
+
+/* ── Mobile adjustments for scroll story ── */
+@media (max-width: 900px) {
+  .zone-c { left: 1.4rem; bottom: 5rem; max-width: 85vw; }
+  .zone-d { display: none; /* hide secondary content on mobile */ }
+  .zone-a { left: 1.4rem; top: 4.5rem; }
+  .st-h { font-size: clamp(2.4rem, 8vw, 3.6rem); }
+  .st-sub { font-size: 0.85rem; }
+  .st-pillars { gap: 0.35rem; }
+  .pillar { font-size: 0.5rem; padding: 0.25rem 0.55rem; }
+}
+
+/* ── SECTION HEADINGS ── */
+.sec-lbl { font-size: .82rem; letter-spacing: .38em; text-transform: uppercase; color: var(--fire); margin-bottom: .8rem; font-weight: 800; }
+.sec-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5.8rem); line-height: .9; letter-spacing: .02em; color: var(--cream); }
+.sec-h em { color: var(--gold); font-style: normal; }
+
+/* ════════════════════════════════════════════
+   MENU SECTION (Image Cards)
+   ════════════════════════════════════════════ */
+#menu { background: var(--dark); padding: 9rem 3.5rem; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 4.5rem; }
+.mi {
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, rgba(35, 28, 22, 0.8) 0%, rgba(15, 12, 10, 0.95) 100%);
+  border-radius: 20px; border: 1px solid rgba(255, 184, 0, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s;
+  display: flex; flex-direction: column;
+}
+.mi:hover { transform: translateY(-8px); border-color: rgba(255, 184, 0, 0.3); }
+.mi-img-wrapper { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+.mi-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.mi:hover .mi-img { transform: scale(1.1); }
+.mi-tag { position: absolute; top: 1.2rem; left: 1.2rem; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--fire); color: var(--cream); padding: 0.35rem 0.8rem; border-radius: 50px; z-index: 2; box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4); }
+.mi-content { padding: 1.8rem 1.8rem 2.2rem; display: flex; flex-direction: column; flex-grow: 1; }
+.mi-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.8rem; }
+.mi-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--cream); letter-spacing: 0.04em; margin: 0; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
+.mi-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); text-shadow: 0 0 15px rgba(255, 184, 0, 0.2); }
+.mi-desc { font-size: 0.85rem; color: rgba(255, 248, 238, 0.65); line-height: 1.7; }
+
+/* ════════════════════════════════════════════
+   CTA SECTION
+   ════════════════════════════════════════════ */
+#order{background:var(--dark);text-align:center;padding:10rem 3rem;position:relative;overflow:hidden;}
+#order::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,rgba(255,69,0,.18),transparent 55%);}
+.cta-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,10vw,8.5rem);line-height:.88;letter-spacing:.02em;margin-bottom:2.2rem;position:relative;z-index:1;}
+.cta-h .outline{-webkit-text-stroke:1px var(--gold);color:transparent;}
+.cta-btn{
+  position:relative;z-index:1;display:inline-block;
+  background:var(--fire);color:var(--cream);
+  padding:1.1rem 3.5rem;font-family:'Bebas Neue',sans-serif;
+  font-size:1.3rem;letter-spacing:.12em;cursor:none;
+  transition:all .25s;text-decoration:none;
+}
+.cta-btn:hover{background:var(--gold);color:var(--dark);transform:translateY(-4px);box-shadow:0 20px 50px rgba(255,69,0,.35);}
+.sub-txt{margin-top:1.5rem;font-size:.78rem;color:rgba(255,248,238,.28);letter-spacing:.12em;text-transform:uppercase;position:relative;z-index:1;}
+
+/* ── FOOTER ── */
+footer {
+  background: rgba(255, 248, 238, 0.015);
+  border-top: 1px solid rgba(255, 184, 0, 0.1);
+  padding: 5rem 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+}
+.footer-logo span {
+  color: var(--fire);
+}
+.footer-links {
+  display: flex;
+  gap: 2.5rem;
+}
+.footer-links a {
+  color: rgba(255, 248, 238, 0.7);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.footer-links a:hover {
+  color: var(--gold);
+}
+.footer-copy {
+  margin-top: 1rem;
+  padding-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+  border-top: 1px solid rgba(255, 184, 0, 0.1);
+  text-align: center;
+  color: rgba(255, 248, 238, 0.35);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:.1s;}.reveal-d2{transition-delay:.2s;}.reveal-d3{transition-delay:.3s;}.reveal-d4{transition-delay:.4s;}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  nav{padding:1rem 1.4rem;}
+  .nav-links{display:none;}
+  
+  /* Stack/adjust hero on mobile */
+  #hero {
+    height: 100vh;
+    min-height: 560px;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-bg {
+    background-position: center center; /* center image on mobile */
+  }
+  .hero-overlay {
+    background: linear-gradient(
+      0deg,
+      rgba(8, 6, 4, 0.96) 0%,
+      rgba(8, 6, 4, 0.8) 50%,
+      rgba(8, 6, 4, 0.65) 100%
+    );
+  }
+  .hero-content {
+    padding: 0 1.5rem;
+    align-items: center;
+    text-align: center;
+    margin-top: -4rem;
+  }
+  .hero-h {
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+  }
+  .hero-desc {
+    font-size: 0.82rem;
+    max-width: 100%;
+  }
+  .hero-cta {
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  .hero-stats {
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 0 0 50%;
+    padding: 0.8rem 1rem;
+  }
+  /* borders for 2x2 grid in mobile stats */
+  .stat:nth-child(1), .stat:nth-child(2) {
+    border-bottom: 1px solid rgba(255, 184, 0, 0.08);
+  }
+  .stat:nth-child(odd) {
+    border-right: 1px solid rgba(255, 184, 0, 0.08);
+  }
+  .stat:nth-child(even) {
+    border-right: none;
+  }
+
+  #menu{padding:5rem 1.4rem;}
+  .cta-h{font-size:clamp(2.8rem,9vw,5rem);}
+}
+
