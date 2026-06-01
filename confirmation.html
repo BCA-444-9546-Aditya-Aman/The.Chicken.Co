@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Confirmation Page Specific Styles */
+  #confirmation-page { padding: 10rem 3.5rem 4rem; min-height: calc(100vh - 200px); display: flex; flex-direction: column; align-items: center; text-align: center; }
+  
+  .conf-icon { font-size: 5rem; margin-bottom: 1.5rem; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.5); }
+  @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+  
+  .conf-header { margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s ease 0.3s forwards; }
+  .conf-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 5rem); color: var(--cream); letter-spacing: 0.02em; margin-bottom: 0.5rem; line-height: 1; }
+  .conf-header h1 span { color: var(--gold); }
+  .conf-header p { font-size: 1.2rem; color: rgba(255,248,238,0.7); }
+  
+  .order-details { background: linear-gradient(160deg, rgba(35, 28, 22, 0.6) 0%, rgba(15, 12, 10, 0.9) 100%); border: 1px solid rgba(255,184,0,0.2); border-radius: 16px; padding: 3rem; max-width: 500px; width: 100%; margin: 0 auto 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.6s ease 0.5s forwards; }
+  
+  .detail-row { display: flex; justify-content: space-between; margin-bottom: 1.2rem; border-bottom: 1px dashed rgba(255,248,238,0.1); padding-bottom: 1.2rem; }
+  .detail-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+  .detail-label { color: rgba(255,248,238,0.6); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .detail-val { color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; }
+  
+  .timer-box { background: rgba(255,69,0,0.1); border: 1px solid rgba(255,69,0,0.3); border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+  .timer-box p { color: var(--cream); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  .timer { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--fire); line-height: 1; }
+  
+  .home-btn { display: inline-block; background: transparent; color: var(--cream); border: 1px solid rgba(255,184,0,0.4); padding: 1rem 2.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; text-decoration: none; border-radius: 6px; transition: all 0.3s; opacity: 0; animation: fadeUp 0.6s ease 0.7s forwards; }
+  .home-btn:hover { background: var(--gold); color: var(--dark); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,184,0,0.2); }
+  
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  @media(max-width: 900px) {
+    #confirmation-page { padding: 8rem 1.4rem 4rem; }
+    .order-details { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.html" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── CONFIRMATION SECTION ── -->
+<section id="confirmation-page">
+  <div class="conf-icon">🔥</div>
+  <div class="conf-header">
+    <h1>It's in the <span>Fryer!</span></h1>
+    <p>Your order has been received and is being prepared fresh.</p>
+  </div>
+  
+  <div class="order-details">
+    <div class="detail-row">
+      <span class="detail-label">Order Number</span>
+      <span class="detail-val" id="order-id">#CHK-</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Status</span>
+      <span class="detail-val" style="color:var(--cream);">Preparing</span>
+    </div>
+    
+    <div class="timer-box">
+      <p>Our 8-Minute Serve Promise</p>
+      <div class="timer" id="countdown">08:00</div>
+    </div>
+  </div>
+  
+  <a href="index.html" class="home-btn">Back to Home</a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script>
+  // Generate random order ID
+  document.getElementById('order-id').textContent += Math.floor(10000 + Math.random() * 90000);
+
+  // Countdown Logic (8 minutes)
+  let timeInSeconds = 8 * 60;
+  const timerElement = document.getElementById('countdown');
+  
+  const timer = setInterval(() => {
+    if (timeInSeconds <= 0) {
+      clearInterval(timer);
+      timerElement.textContent = "Ready!";
+      timerElement.style.color = "var(--gold)";
+      return;
+    }
+    
+    timeInSeconds--;
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    
+    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }, 1000);
+
+  /* CURSOR RE-INIT FOR THIS PAGE */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  
+  document.querySelectorAll('a').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+  });
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

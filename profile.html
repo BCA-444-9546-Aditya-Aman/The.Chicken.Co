@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* ── GREETING CARD ── */
+  .profile-greeting {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem 1.8rem;
+    background: rgba(255,184,0,0.03);
+    border: 1px solid rgba(255,184,0,0.12);
+    border-radius: 14px;
+    margin-bottom: 1.6rem;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+  }
+  .profile-greeting-text h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--cream);
+    margin: 0 0 .2rem;
+  }
+  .profile-greeting-text p {
+    font-size: .92rem;
+    color: rgba(255,248,238,.5);
+    margin: 0;
+  }
+
+  /* ── QUICK ACTION LINKS ── */
+  .quick-actions {
+    display: flex;
+    gap: .85rem;
+    margin-bottom: 2.2rem;
+  }
+  .quick-action-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+    padding: .9rem .6rem;
+    border: 1px solid rgba(255,248,238,.1);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--cream);
+    transition: border-color .25s, background .25s, transform .2s;
+    cursor: pointer;
+  }
+  .quick-action-card:hover {
+    border-color: rgba(255,184,0,.35);
+    background: rgba(255,184,0,0.04);
+    transform: translateY(-2px);
+  }
+  .quick-action-card .qa-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+  .quick-action-card .qa-label {
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: .02em;
+    color: rgba(255,248,238,.7);
+    text-align: center;
+  }
+
+  /* ── SECTION LABELS ── */
+  .prof-section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: .12em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    padding-bottom: .45rem;
+    border-bottom: 1px solid rgba(255,184,0,.12);
+  }
+
+  /* ── FORM LAYOUT ── */
+  .prof-form-section {
+    margin-bottom: 2rem;
+  }
+
+  /* ── BUTTON ALIGN ── */
+  #profile-form .acc-submit {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .profile-greeting {
+      padding: 1.1rem 1.2rem;
+      gap: 1rem;
+    }
+    .profile-avatar {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      font-size: 1.5rem;
+    }
+    .profile-greeting-text h2 {
+      font-size: 1.15rem;
+    }
+    .quick-actions {
+      gap: .55rem;
+    }
+    .quick-action-card {
+      padding: .7rem .4rem;
+    }
+    .quick-action-card .qa-icon {
+      font-size: 1.15rem;
+    }
+    .quick-action-card .qa-label {
+      font-size: .7rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon" style="color:var(--gold);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.html" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── PROFILE PAGE ── -->
+<section id="account-page">
+  <div class="acc-container" style="max-width:680px;">
+
+    <div class="acc-page-header">
+      <h1>My Profile</h1>
+      <p>Manage your personal details and delivery address</p>
+    </div>
+
+    <!-- Greeting Card -->
+    <div class="profile-greeting">
+      <div class="profile-avatar" id="profile-avatar">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <div class="profile-greeting-text">
+        <h2 id="greeting-name">Welcome, Guest</h2>
+        <p id="greeting-email">Update your details below</p>
+      </div>
+    </div>
+
+    <!-- Quick Action Links -->
+    <div class="quick-actions">
+      <a href="orders.html" class="quick-action-card">
+        <span class="qa-icon">🛒</span>
+        <span class="qa-label">My Orders</span>
+      </a>
+      <a href="offers.html" class="quick-action-card">
+        <span class="qa-icon">🎁</span>
+        <span class="qa-label">Offers</span>
+      </a>
+      <a href="#address-section" class="quick-action-card">
+        <span class="qa-icon">📍</span>
+        <span class="qa-label">Saved Address</span>
+      </a>
+    </div>
+
+    <!-- Profile Form -->
+    <form class="acc-form" id="profile-form">
+
+      <!-- Personal Details -->
+      <div class="prof-form-section">
+        <div class="prof-section-label">PERSONAL DETAILS</div>
+        <div class="acc-form-row">
+          <div class="acc-form-group">
+            <label class="acc-label">Full Name</label>
+            <input type="text" id="prof-name" class="acc-input" placeholder="John Doe" required>
+          </div>
+          <div class="acc-form-group">
+            <label class="acc-label">Phone Number</label>
+            <input type="tel" id="prof-phone" class="acc-input" placeholder="9876543210" required>
+          </div>
+        </div>
+        <div class="acc-form-group">
+          <label class="acc-label">Email Address</label>
+          <input type="email" id="prof-email" class="acc-input" placeholder="john@example.com" required>
+        </div>
+      </div>
+
+      <!-- Delivery Address -->
+      <div class="prof-form-section" id="address-section">
+        <div class="prof-section-label">DELIVERY ADDRESS</div>
+        <div class="acc-form-group">
+          <label class="acc-label">Address</label>
+          <textarea id="prof-address" class="acc-input" placeholder="Full street address, apt number, city, pin code" required></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="acc-submit">Save Changes</button>
+    </form>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  /* CURSOR */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  document.querySelectorAll('button,a,input,textarea').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+  });
+
+  // ── PROFILE LOGIC ──
+  const profileForm = document.getElementById('profile-form');
+  const profName = document.getElementById('prof-name');
+  const profPhone = document.getElementById('prof-phone');
+  const profEmail = document.getElementById('prof-email');
+  const profAddress = document.getElementById('prof-address');
+  const avatarEl = document.getElementById('profile-avatar');
+  const greetName = document.getElementById('greeting-name');
+  const greetEmail = document.getElementById('greeting-email');
+
+  function updateGreeting(user) {
+    if (user && user.name) {
+      const initial = user.name.trim().charAt(0).toUpperCase();
+      avatarEl.textContent = initial;
+      greetName.textContent = 'Hey, ' + user.name.split(' ')[0] + '!';
+    } else {
+      avatarEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+      greetName.textContent = 'Welcome, Guest';
+    }
+    if (user && user.email) {
+      greetEmail.textContent = user.email;
+    } else {
+      greetEmail.textContent = 'Update your details below';
+    }
+  }
+
+  const savedUser = JSON.parse(localStorage.getItem('chicken_co_user') || '{}');
+  if (savedUser.name) profName.value = savedUser.name;
+  if (savedUser.phone) profPhone.value = savedUser.phone;
+  if (savedUser.email) profEmail.value = savedUser.email;
+  if (savedUser.address) profAddress.value = savedUser.address;
+  updateGreeting(savedUser);
+
+  profileForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const userData = {
+      name: profName.value,
+      phone: profPhone.value,
+      email: profEmail.value,
+      address: profAddress.value
+    };
+    localStorage.setItem('chicken_co_user', JSON.stringify(userData));
+    updateGreeting(userData);
+    const btn = profileForm.querySelector('.acc-submit');
+    const orig = btn.textContent;
+    btn.textContent = 'Saved ✓';
+    btn.style.background = 'var(--gold)';
+    btn.style.color = 'var(--dark)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  });
+
+  // Live-update greeting as user types name
+  profName.addEventListener('input', () => {
+    updateGreeting({ name: profName.value, email: profEmail.value });
+  });
+  profEmail.addEventListener('input', () => {
+    updateGreeting({ name: profName.value, email: profEmail.value });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Checkout Specific Styles */
+  #checkout-page { padding: 8rem 3.5rem 4rem; min-height: calc(100vh - 200px); }
+  .checkout-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 400px; gap: 4rem; }
+  
+  .checkout-header { margin-bottom: 2rem; border-bottom: 1px solid rgba(255,184,0,0.1); padding-bottom: 1rem; }
+  .checkout-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--cream); letter-spacing: 0.02em; }
+  
+  .form-section { margin-bottom: 3rem; }
+  .form-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+  
+  .input-group { margin-bottom: 1.5rem; }
+  .input-group label { display: block; font-size: 0.85rem; color: rgba(255,248,238,0.6); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+  .input-group input, .input-group textarea, .input-group select { 
+    width: 100%; padding: 1rem 1.2rem; background: rgba(8,6,4,0.6); border: 1px solid rgba(255,184,0,0.2); 
+    border-radius: 8px; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 1rem; 
+    transition: all 0.3s; outline: none;
+  }
+  .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+    border-color: var(--fire); box-shadow: 0 0 15px rgba(255,69,0,0.2); background: rgba(8,6,4,0.9);
+  }
+  
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  
+  .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .payment-method { 
+    border: 1px solid rgba(255,184,0,0.2); padding: 1.5rem; border-radius: 8px; cursor: pointer; 
+    text-align: center; transition: all 0.3s; background: rgba(8,6,4,0.4);
+  }
+  .payment-method.active { border-color: var(--gold); background: rgba(255,184,0,0.1); box-shadow: 0 0 20px rgba(255,184,0,0.15); }
+  .payment-method h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--cream); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .payment-method p { font-size: 0.8rem; color: rgba(255,248,238,0.5); }
+  
+  .order-summary { background: linear-gradient(160deg, rgba(35, 28, 22, 0.4) 0%, rgba(15, 12, 10, 0.8) 100%); border: 1px solid rgba(255,184,0,0.15); border-radius: 16px; padding: 2.5rem; height: fit-content; position: sticky; top: 100px; }
+  .summary-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; margin-bottom: 1.5rem; color: var(--cream); border-bottom: 1px solid rgba(255,184,0,0.1); padding-bottom: 1rem; }
+  
+  .checkout-items { margin-bottom: 2rem; max-height: 300px; overflow-y: auto; padding-right: 10px; }
+  .checkout-items::-webkit-scrollbar { width: 4px; }
+  .checkout-items::-webkit-scrollbar-thumb { background: rgba(255,184,0,0.3); border-radius: 4px; }
+  
+  .checkout-item { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem; border-bottom: 1px dashed rgba(255,248,238,0.1); padding-bottom: 1rem; }
+  .checkout-item-name { color: var(--cream); font-weight: 500; }
+  .checkout-item-qty { color: rgba(255,248,238,0.5); font-size: 0.8rem; }
+  .checkout-item-price { color: var(--gold); }
+  
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; color: rgba(255,248,238,0.7); font-size: 0.95rem; }
+  .summary-row.total { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--gold); border-top: 1px solid rgba(255,184,0,0.2); padding-top: 1rem; margin-top: 1rem; }
+  
+  .place-order-btn { display: block; width: 100%; text-align: center; background: var(--fire); color: var(--cream); padding: 1.2rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.1em; border: none; border-radius: 8px; margin-top: 2rem; cursor: none; transition: all 0.3s; text-decoration: none; }
+  .place-order-btn:hover { background: var(--gold); color: var(--dark); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255,69,0,0.3); }
+
+  /* Payment Mock Overlay */
+  #payment-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  #payment-overlay.show { opacity: 1; pointer-events: all; }
+  .payment-modal { background: var(--dark); border: 1px solid var(--gold); padding: 3rem; border-radius: 12px; text-align: center; max-width: 400px; }
+  .payment-modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--gold); margin-bottom: 1rem; }
+  .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,184,0,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width: 900px) {
+    #checkout-page { padding: 6rem 1.4rem 4rem; }
+    .checkout-container { grid-template-columns: 1fr; gap: 2rem; }
+    .form-row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.html" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── CHECKOUT SECTION ── -->
+<section id="checkout-page">
+  <div class="checkout-container">
+    
+    <div class="checkout-form">
+      <div class="checkout-header">
+        <h1>Secure <span>Checkout</span></h1>
+      </div>
+      
+      <form id="checkout-form" onsubmit="handleCheckout(event)">
+        <!-- Contact Info -->
+        <div class="form-section">
+          <h2>1. Contact Details</h2>
+          <div class="form-row">
+            <div class="input-group">
+              <label>First Name</label>
+              <input type="text" id="co-fname" required placeholder="John">
+            </div>
+            <div class="input-group">
+              <label>Last Name</label>
+              <input type="text" id="co-lname" required placeholder="Doe">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Email Address</label>
+              <input type="email" id="co-email" required placeholder="john@example.com">
+            </div>
+            <div class="input-group">
+              <label>Phone Number</label>
+              <input type="tel" id="co-phone" required placeholder="+91 98765 43210">
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Info -->
+        <div class="form-section">
+          <h2>2. Delivery Address</h2>
+          <div class="input-group">
+            <label>Street Address</label>
+            <input type="text" id="co-address" required placeholder="House No, Building, Street Area">
+          </div>
+          <div class="form-row">
+            <div class="input-group">
+              <label>City</label>
+              <input type="text" id="co-city" required placeholder="Mumbai">
+            </div>
+            <div class="input-group">
+              <label>PIN Code</label>
+              <input type="text" id="co-pin" required placeholder="400001">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Delivery Instructions (Optional)</label>
+            <textarea rows="3" placeholder="e.g. Leave at the door, call upon arrival..."></textarea>
+          </div>
+        </div>
+
+        <!-- Payment Selection -->
+        <div class="form-section">
+          <h2>3. Payment Method</h2>
+          <div class="payment-methods">
+            <div class="payment-method active" onclick="selectPayment(this, 'card')">
+              <h3>💳 Pay Online</h3>
+              <p>Credit Card, UPI, NetBanking</p>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this, 'cod')">
+              <h3>💵 Cash on Delivery</h3>
+              <p>Pay when you receive the order</p>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" class="place-order-btn">Place Order — It's Worth It</button>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary-wrapper">
+      <div class="order-summary" id="checkout-summary">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- Payment Mock Overlay -->
+<div id="payment-overlay">
+  <div class="payment-modal">
+    <div class="spinner"></div>
+    <h2>Processing Payment...</h2>
+    <p style="color: rgba(255,248,238,0.6);">Please do not refresh the page.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  // Auto-fill form from profile data
+  const savedUser = JSON.parse(localStorage.getItem('chicken_co_user') || '{}');
+  if (savedUser.name) {
+    const parts = savedUser.name.split(' ');
+    document.getElementById('co-fname').value = parts[0] || '';
+    document.getElementById('co-lname').value = parts.slice(1).join(' ') || '';
+  }
+  if (savedUser.email) document.getElementById('co-email').value = savedUser.email;
+  if (savedUser.phone) document.getElementById('co-phone').value = savedUser.phone;
+  if (savedUser.address) {
+    document.getElementById('co-address').value = savedUser.address;
+  }
+
+  let selectedPaymentMethod = 'card';
+
+  function selectPayment(el, method) {
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+    el.classList.add('active');
+    selectedPaymentMethod = method;
+  }
+
+  function renderCheckoutSummary() {
+    const cart = getCart();
+    const container = document.getElementById('checkout-summary');
+    
+    if (cart.length === 0) {
+      window.location.href = 'cart.html';
+      return;
+    }
+    
+    const totals = getCartTotals();
+    
+    let itemsHTML = '<h2 class="summary-title">Order Summary</h2><div class="checkout-items">';
+    cart.forEach(item => {
+      itemsHTML += `
+        <div class="checkout-item">
+          <div>
+            <div class="checkout-item-name">${item.name}</div>
+            <div class="checkout-item-qty">Qty: ${item.quantity}</div>
+          </div>
+          <div class="checkout-item-price">₹${item.price * item.quantity}</div>
+        </div>
+      `;
+    });
+    itemsHTML += '</div>';
+    
+    const summaryHTML = `
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>₹${totals.subtotal.toFixed(2)}</span>
+      </div>
+      <div class="summary-row">
+        <span>Tax (5% GST)</span>
+        <span>₹${totals.tax.toFixed(2)}</span>
+      </div>
+      <div class="summary-row">
+        <span>Delivery Fee</span>
+        <span>₹${totals.delivery.toFixed(2)}</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹${totals.total.toFixed(2)}</span>
+      </div>
+    `;
+    
+    container.innerHTML = itemsHTML + summaryHTML;
+  }
+
+  function handleCheckout(e) {
+    e.preventDefault(); // prevent form submission
+    
+    if(selectedPaymentMethod === 'card') {
+      const overlay = document.getElementById('payment-overlay');
+      overlay.classList.add('show');
+      
+      // Mock payment processing delay
+      setTimeout(() => {
+        clearCart();
+        window.location.href = 'confirmation.html';
+      }, 2500);
+    } else {
+      clearCart();
+      window.location.href = 'confirmation.html';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', renderCheckoutSummary);
+
+  /* CURSOR RE-INIT FOR THIS PAGE */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  
+  document.querySelectorAll('button,a,input,textarea,select,.payment-method').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+  });
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

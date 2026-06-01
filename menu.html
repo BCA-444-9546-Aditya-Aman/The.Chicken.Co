@@ -3,23 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Chicken Co. — Born Fresh. Fried Perfect.</title>
-<meta name="description" content="Farm-raised, double-fried, served perfect. The Chicken Co. — where obsession meets flavour.">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<title>Full Menu — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<style>
+  #menu-page { padding: 10rem 3.5rem 6rem; min-height: calc(100vh - 200px); background: var(--dark); }
+  .menu-page-header { text-align: center; margin-bottom: 4rem; }
+  .menu-page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 5rem); color: var(--cream); letter-spacing: 0.02em; line-height: 1; }
+  .menu-page-header h1 span { color: var(--gold); }
+  .menu-page-header p { color: rgba(255,248,238,0.6); font-size: 1.1rem; max-width: 600px; margin: 1rem auto 0; }
+  
+  .menu-filters { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+  .filter-btn { background: transparent; border: 1px solid rgba(255,248,238,0.15); color: rgba(255,248,238,0.5); padding: 0.5rem 1.4rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; letter-spacing: 0.05em; cursor: none; transition: all 0.25s; }
+  .filter-btn:hover { border-color: rgba(255,184,0,0.4); color: var(--cream); }
+  .filter-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+  .mi.hidden { display: none; }
+  .mi.fade-in { animation: fadeIn 0.4s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media(max-width: 900px) {
+    #menu-page { padding: 8rem 1.4rem 4rem; }
+  }
+
+</style>
 </head>
 <body>
 
 <div id="cur"></div>
 <div id="cur-r"></div>
-<div id="bar"></div>
 
 <!-- ── NAV ── -->
-<nav id="nav">
+<nav id="nav" class="scrolled">
   <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="menu.html">Menu</a></li>
+    <li><a href="menu.html" style="color:var(--gold);">Menu</a></li>
     <li><a href="index.html#story">About</a></li>
   </ul>
   <div class="nav-actions">
@@ -42,182 +60,23 @@
   </div>
 </nav>
 
-<!-- ════════════════════════════════════════
-     HERO — FULL SCREEN BACKGROUND WITH LEFT TEXTS
-     ════════════════════════════════════════ -->
-<section id="hero">
-  <!-- Parallax Background Image -->
-  <div class="hero-bg"></div>
-  
-  <!-- Premium Dark Overlay for text legibility and bottom section blending -->
-  <div class="hero-overlay"></div>
-
-  <!-- Left-aligned Branding Content -->
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="ew-line"></div>
-      <span>Est. 2019 · India's Finest Fried Chicken</span>
-    </div>
-
-    <h1 class="hero-h">
-      <span class="line-wrap"><span class="line-inner">Born</span></span>
-      <span class="line-wrap"><span class="line-inner fire">Fresh.</span></span>
-      <span class="line-wrap"><span class="line-inner gold">Fried Perfect.</span></span>
-    </h1>
-
-    <div class="hero-divider"></div>
-
-    <p class="hero-desc">
-      Farm-raised, never frozen. Marinated in 14 secret spices
-      for 24 hours. Double fried to legendary crunch.
-      Ready in 8 minutes — every single time.
-    </p>
-
-    <div class="hero-cta">
-      <a href="#menu" class="btn-primary"><span>Explore Menu</span></a>
-      <a href="#story" class="btn-ghost">Our Process →</a>
-    </div>
+<!-- ── FULL MENU SECTION ── -->
+<section id="menu-page">
+  <div class="menu-page-header reveal">
+    <h1>Our Full <span>Menu</span></h1>
+    <p>Everything is farm-raised, double-fried, and served hot. Explore our legendary offerings.</p>
   </div>
 
-  <!-- Glassmorphic Stats Strip -->
-  <div class="hero-stats">
-    <div class="stat">
-      <span class="stat-num">14</span>
-      <span class="stat-lbl">Secret Spices</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">24H</span>
-      <span class="stat-lbl">Marination</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">2×</span>
-      <span class="stat-lbl">Double Fried</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">8<span style="font-size:.85rem">min</span></span>
-      <span class="stat-lbl">Serve Promise</span>
-    </div>
+  <div class="menu-filters reveal">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="wings">Wings</button>
+    <button class="filter-btn" data-filter="burgers">Burgers</button>
+    <button class="filter-btn" data-filter="grilled">Grilled</button>
+    <button class="filter-btn" data-filter="combos">Combos</button>
   </div>
-</section>
 
-<!-- ── MARQUEE DIVIDER ── -->
-<div class="mq-wrap">
-  <div class="mq-track">
-    <span>Free Range</span><span>Hand Marinated</span><span>Double Fried</span><span>14 Secret Spices</span><span>Served Hot</span><span>8 Minute Promise</span><span>No Compromise</span>
-    <span>Free Range</span><span>Hand Marinated</span><span>Double Fried</span><span>14 Secret Spices</span><span>Served Hot</span><span>8 Minute Promise</span><span>No Compromise</span>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
-     PROCESS — SCROLL STORY
-     ════════════════════════════════════════ -->
-<div id="story">
-  <div id="sticky">
-    <canvas id="c"></canvas>
-    <div id="vignette"></div>
-
-    <!-- Chapter bar (Removed) -->
-
-    <!-- Scene texts -->
-    <div class="scene-text" id="s1">
-      <div class="zone-a">
-        <div class="st-tag">Chapter 01 — The Bird</div>
-      </div>
-      <div class="zone-c">
-        <h2 class="st-h">
-          <span class="word"><span class="word-inner">Born</span></span>
-          <span class="word"><span class="word-inner f">Free</span></span>
-          <span class="word"><span class="word-inner g">Range.</span></span>
-        </h2>
-        <p class="st-sub">From our farms to your plate — before sunrise.</p>
-        <div class="st-pillars">
-          <span class="pillar">Farm Fresh</span>
-          <span class="pillar">Hand Selected</span>
-          <span class="pillar">Never Frozen</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="scene-text" id="s2">
-      <div class="zone-a">
-        <div class="st-tag">Chapter 02 — The Drop</div>
-      </div>
-      <div class="zone-c">
-        <h2 class="st-h">
-          <span class="word"><span class="word-inner">Into</span></span>
-          <span class="word"><span class="word-inner g">Liquid</span></span>
-          <span class="word"><span class="word-inner f">Gold.</span></span>
-        </h2>
-        <p class="st-sub">24 hours. 14 spices. Zero compromise.</p>
-      </div>
-      <div class="zone-d">
-        <p class="st-quote">Taste isn't added. It's absorbed.</p>
-      </div>
-    </div>
-
-    <div class="scene-text" id="s3">
-      <div class="zone-a">
-        <div class="st-tag">Chapter 03 — The Fry</div>
-      </div>
-      <div class="zone-c">
-        <h2 class="st-h">
-          <span class="word"><span class="word-inner">Double</span></span>
-          <span class="word"><span class="word-inner f">Fried.</span></span>
-        </h2>
-        <p class="st-sub">First fry seals. Second fry perfects.</p>
-        <div class="st-pillars">
-          <span class="pillar">Pure Oil</span>
-          <span class="pillar">Zero Trans Fat</span>
-          <span class="pillar">Crunch Guaranteed</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="scene-text" id="s4">
-      <div class="zone-a">
-        <div class="st-tag">Chapter 04 — The Serve</div>
-      </div>
-      <div class="zone-c">
-        <h2 class="st-h">
-          <span class="word"><span class="word-inner">Served</span></span>
-          <span class="word"><span class="word-inner g">Hot.</span></span>
-          <span class="word"><span class="word-inner">Always.</span></span>
-        </h2>
-        <p class="st-sub">8 minutes from kitchen to you — or it's free.</p>
-      </div>
-      <div class="zone-d">
-        <p class="st-quote">We don't serve food. We deliver an experience.</p>
-        <div class="st-pillars" style="justify-content: flex-end;">
-          <span class="pillar">Hygiene Certified</span>
-          <span class="pillar">Kitchen To Table</span>
-          <span class="pillar">No Exceptions</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="scroll-hint">
-      <span>Scroll to see our process</span>
-      <div class="arr"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── DOTS (inside story context) ── -->
-<div id="dots">
-  <div class="dot active" title="The Bird"></div>
-  <div class="dot" title="The Drop"></div>
-  <div class="dot" title="The Fry"></div>
-  <div class="dot" title="The Serve"></div>
-</div>
-
-<!-- ── MENU ── -->
-<section id="menu">
-  <div class="reveal">
-    <p class="sec-lbl">What We Do Best</p>
-    <h2 class="sec-h">The <em>Menu.</em></h2>
-  </div>
   <div class="menu-grid">
-    <div class="mi reveal reveal-d1">
+    <div class="mi reveal reveal-d1" data-category="wings">
       <div class="mi-img-wrapper">
         <div class="mi-tag">Bestseller</div>
         <img src="assets/chicken_wings_1780138004264.png" alt="Classic Crispy Wings" class="mi-img">
@@ -241,10 +100,11 @@
         <button class="add-to-cart-btn" data-id="item-wings" data-name="Classic Crispy Wings" data-price="189" data-image="assets/chicken_wings_1780138004264.png">Add to Cart</button>
       </div>
     </div>
-    <div class="mi reveal reveal-d2">
+    
+    <div class="mi reveal reveal-d2" data-category="burgers">
       <div class="mi-img-wrapper">
         <div class="mi-tag">🔥 Hot</div>
-        <img src="assets/chicken_burger_1780138021736.png" alt="Towering Chicken Burger" class="mi-img">
+        <img src="assets/chicken_burger_1780138021736.png" alt="Tower Burger" class="mi-img">
       </div>
       <div class="mi-content">
         <div class="mi-header">
@@ -265,10 +125,11 @@
         <button class="add-to-cart-btn" data-id="item-burger" data-name="Tower Burger" data-price="249" data-image="assets/chicken_burger_1780138021736.png">Add to Cart</button>
       </div>
     </div>
-    <div class="mi reveal reveal-d3">
+    
+    <div class="mi reveal reveal-d3" data-category="grilled">
       <div class="mi-img-wrapper">
         <div class="mi-tag">Signature</div>
-        <img src="assets/chicken_peri_peri_1780138042749.png" alt="Peri Peri Chicken" class="mi-img">
+        <img src="assets/chicken_peri_peri_1780138042749.png" alt="Peri Peri Flame" class="mi-img">
       </div>
       <div class="mi-content">
         <div class="mi-header">
@@ -289,10 +150,11 @@
         <button class="add-to-cart-btn" data-id="item-peri" data-name="Peri Peri Flame" data-price="349" data-image="assets/chicken_peri_peri_1780138042749.png">Add to Cart</button>
       </div>
     </div>
-    <div class="mi reveal reveal-d4">
+    
+    <div class="mi reveal reveal-d4" data-category="grilled">
       <div class="mi-img-wrapper">
         <div class="mi-tag">New</div>
-        <img src="assets/chicken_kababs_1780138059514.png" alt="Chicken Kababs" class="mi-img">
+        <img src="assets/chicken_kababs_1780138059514.png" alt="Smoky Kababs" class="mi-img">
       </div>
       <div class="mi-content">
         <div class="mi-header">
@@ -313,21 +175,55 @@
         <button class="add-to-cart-btn" data-id="item-kabab" data-name="Smoky Kababs" data-price="229" data-image="assets/chicken_kababs_1780138059514.png">Add to Cart</button>
       </div>
     </div>
+    
+    <div class="mi reveal reveal-d1" data-category="wings">
+      <div class="mi-img-wrapper">
+        <img src="assets/chicken_wings_1780138004264.png" alt="Spicy Tenders" class="mi-img" style="filter: hue-rotate(-20deg) saturate(1.5);">
+      </div>
+      <div class="mi-content">
+        <div class="mi-header">
+          <h3 class="mi-name">Spicy Tenders</h3>
+          <div class="mi-price">₹219</div>
+        </div>
+        <div class="mi-desc">4 pieces of our premium boneless chicken tenders, dusted in our hot spice rub.</div>
+        <div class="portion-selector">
+          <label class="portion-lbl">
+            <input type="radio" name="portion-tenders" value="half" data-price="219" checked>
+            <span class="portion-btn">Half Plate</span>
+          </label>
+          <label class="portion-lbl">
+            <input type="radio" name="portion-tenders" value="full" data-price="389">
+            <span class="portion-btn">Full Plate</span>
+          </label>
+        </div>
+        <button class="add-to-cart-btn" data-id="item-tenders" data-name="Spicy Tenders" data-price="219" data-image="assets/chicken_wings_1780138004264.png">Add to Cart</button>
+      </div>
+    </div>
+    
+    <div class="mi reveal reveal-d2" data-category="combos">
+      <div class="mi-img-wrapper">
+        <img src="assets/chicken_peri_peri_1780138042749.png" alt="Family Bucket" class="mi-img" style="filter: brightness(1.1);">
+      </div>
+      <div class="mi-content">
+        <div class="mi-header">
+          <h3 class="mi-name">The Family Bucket</h3>
+          <div class="mi-price">₹699</div>
+        </div>
+        <div class="mi-desc">12 pieces of assorted fried chicken, 2 large fries, and 4 house dips. Perfect for sharing.</div>
+        <div class="portion-selector">
+          <label class="portion-lbl">
+            <input type="radio" name="portion-bucket" value="half" data-price="699" checked>
+            <span class="portion-btn">Regular</span>
+          </label>
+          <label class="portion-lbl">
+            <input type="radio" name="portion-bucket" value="full" data-price="1199">
+            <span class="portion-btn">Mega Feast</span>
+          </label>
+        </div>
+        <button class="add-to-cart-btn" data-id="item-bucket" data-name="The Family Bucket" data-price="699" data-image="assets/chicken_peri_peri_1780138042749.png">Add to Cart</button>
+      </div>
+    </div>
   </div>
-  
-  <div style="text-align: center; margin-top: 4rem;">
-    <a href="menu.html" class="btn-primary reveal"><span>View Full Menu</span></a>
-  </div>
-</section>
-
-<!-- ── CTA ── -->
-<section id="order">
-  <div class="cta-h reveal">
-    <div>Ready to</div>
-    <div class="outline">Get Crispy?</div>
-  </div>
-  <a href="#" class="cta-btn reveal">Order Now — It's Worth It</a>
-  <p class="sub-txt reveal">Dine-in · Takeaway · Delivery · Catering</p>
 </section>
 
 <footer>
@@ -367,10 +263,54 @@
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="assets/cart.js"></script>
-<script src="assets/script.js"></script>
+<script>
+  /* ── REVEAL ON SCROLL ── */
+  const revealEls=document.querySelectorAll('.reveal');
+  const ro=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+  },{threshold:.12});
+  revealEls.forEach(el=>ro.observe(el));
+
+  /* ── MENU FILTER TABS ── */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const menuItems = document.querySelectorAll('.menu-grid .mi');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      menuItems.forEach(item => {
+        item.classList.remove('fade-in');
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.classList.remove('hidden');
+          void item.offsetWidth; /* trigger reflow for re-animation */
+          item.classList.add('fade-in');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  /* CURSOR RE-INIT FOR THIS PAGE */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  
+  // Observe DOM for cursor hover bindings
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('button,a,.mi').forEach(el=>{
+      // Prevent attaching multiple times by using a generic class or data attribute, but for simplicity:
+      el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+      el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+</script>
 <script src="assets/auth.js"></script>
 </body>
 </html>
