@@ -394,7 +394,139 @@
     color: rgba(255,248,238,0.45);
     line-height: 1.4;
   }
+
+  /* Scrollable Modal Content */
+  .modal-content-scroll {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1rem;
+  }
+  .modal-content-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  .modal-content-scroll::-webkit-scrollbar-track {
+    background: rgba(255,248,238,0.02);
+    border-radius: 10px;
+  }
+  .modal-content-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,184,0,0.15);
+    border-radius: 10px;
+  }
+  .modal-content-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,184,0,0.3);
+  }
+
+  /* Modal Sections */
+  .modal-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin: 1.2rem 0 0.8rem 0;
+    text-transform: uppercase;
+  }
+  .modal-divider {
+    height: 1px;
+    background: rgba(255,248,238,0.08);
+    margin: 1.5rem 0;
+  }
+
+  /* Modal Items */
+  .modal-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .modal-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+  .modal-item-left {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .modal-item-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid rgba(255,184,0,0.1);
+  }
+  .modal-item-details {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .modal-item-name {
+    color: var(--cream);
+    font-weight: 500;
+  }
+  .modal-item-qty {
+    color: rgba(255,248,238,0.4);
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+  }
+  .modal-item-price {
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* Billing Grid */
+  .modal-billing-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .billing-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: rgba(255,248,238,0.6);
+  }
+  .billing-val {
+    color: var(--cream);
+  }
+  .billing-row.total-row {
+    border-top: 1px dashed rgba(255,248,238,0.15);
+    padding-top: 0.8rem;
+    margin-top: 0.4rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .billing-row.total-row .billing-label {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .billing-row.total-row .billing-val {
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Delivery Details */
+  .modal-delivery-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: rgba(255,248,238,0.5);
+    text-align: left;
+  }
+  .modal-delivery-info .delivery-name {
+    color: var(--cream);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
 </style>
+
 </head>
 <body>
 
@@ -461,11 +593,57 @@
 <div class="modal-overlay" id="timeline-modal">
   <div class="modal-box">
     <button class="close-modal" id="close-timeline-modal">&times;</button>
-    <div class="modal-title" id="modal-order-number">Order Timeline</div>
+    <div class="modal-title" id="modal-order-number">Order Details</div>
     <div class="modal-subtitle" id="modal-order-date">Placed on ...</div>
     
-    <div class="timeline-container" id="timeline-items-container">
-      <!-- Dynamic timeline items -->
+    <div class="modal-content-scroll">
+      <!-- Timeline Section -->
+      <div class="modal-section-title">Order Status</div>
+      <div class="timeline-container" id="timeline-items-container">
+        <!-- Dynamic timeline items -->
+      </div>
+      
+      <div class="modal-divider"></div>
+      
+      <!-- Items Section -->
+      <div class="modal-section-title">Items Ordered</div>
+      <div id="modal-items-list" class="modal-items-list">
+        <!-- Dynamic items -->
+      </div>
+      
+      <div class="modal-divider"></div>
+      
+      <!-- Billing Section -->
+      <div class="modal-billing-grid">
+        <div class="billing-row">
+          <span class="billing-label">Subtotal</span>
+          <span class="billing-val" id="modal-subtotal">₹0</span>
+        </div>
+        <div class="billing-row">
+          <span class="billing-label">Tax (5%)</span>
+          <span class="billing-val" id="modal-tax">₹0</span>
+        </div>
+        <div class="billing-row">
+          <span class="billing-label">Delivery Fee</span>
+          <span class="billing-val" id="modal-delivery-fee">₹0</span>
+        </div>
+        <div class="billing-row" id="modal-discount-row" style="display:none;">
+          <span class="billing-label">Discount</span>
+          <span class="billing-val" id="modal-discount" style="color: #10b981;">-₹0</span>
+        </div>
+        <div class="billing-row total-row">
+          <span class="billing-label">Grand Total</span>
+          <span class="billing-val" id="modal-total">₹0</span>
+        </div>
+      </div>
+      
+      <div class="modal-divider"></div>
+      
+      <!-- Delivery Details -->
+      <div class="modal-section-title">Delivery Details</div>
+      <div class="modal-delivery-info" id="modal-delivery-info">
+        <!-- Dynamic delivery info -->
+      </div>
     </div>
   </div>
 </div>
@@ -743,26 +921,39 @@
     const modalOrderNum = document.getElementById('modal-order-number');
     const modalOrderDate = document.getElementById('modal-order-date');
     const container = document.getElementById('timeline-items-container');
+    
+    const itemsList = document.getElementById('modal-items-list');
+    const subtotalEl = document.getElementById('modal-subtotal');
+    const taxEl = document.getElementById('modal-tax');
+    const deliveryEl = document.getElementById('modal-delivery-fee');
+    const discountRow = document.getElementById('modal-discount-row');
+    const discountEl = document.getElementById('modal-discount');
+    const totalEl = document.getElementById('modal-total');
+    const deliveryInfoEl = document.getElementById('modal-delivery-info');
 
     modalOrderNum.textContent = `Order #${orderNum}`;
     modalOrderDate.textContent = 'Fetching details...';
     container.innerHTML = '<div style="text-align:center; color:rgba(255,248,238,0.4); padding:2rem 0; font-size:0.9rem;">Loading status timeline...</div>';
+    itemsList.innerHTML = '<div style="text-align:center; color:rgba(255,248,238,0.3); padding:1rem 0; font-size:0.85rem;">Loading items...</div>';
     
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
     // Apply cursor custom scales to close button
     const closeBtn = document.getElementById('close-timeline-modal');
-    closeBtn.addEventListener('mouseenter', () => {
-      cur.style.width = '18px'; cur.style.height = '18px';
-      curR.style.width = '54px'; curR.style.height = '54px';
-      curR.style.borderColor = 'rgba(255,184,0,.65)';
-    });
-    closeBtn.addEventListener('mouseleave', () => {
-      cur.style.width = '10px'; cur.style.height = '10px';
-      curR.style.width = '36px'; curR.style.height = '36px';
-      curR.style.borderColor = 'rgba(255,184,0,.45)';
-    });
+    if (!closeBtn.dataset.hasListener) {
+      closeBtn.dataset.hasListener = "true";
+      closeBtn.addEventListener('mouseenter', () => {
+        cur.style.width = '18px'; cur.style.height = '18px';
+        curR.style.width = '54px'; curR.style.height = '54px';
+        curR.style.borderColor = 'rgba(255,184,0,.65)';
+      });
+      closeBtn.addEventListener('mouseleave', () => {
+        cur.style.width = '10px'; cur.style.height = '10px';
+        curR.style.width = '36px'; curR.style.height = '36px';
+        curR.style.borderColor = 'rgba(255,184,0,.45)';
+      });
+    }
 
     try {
       const res = await fetch(`api/orders/history.php?order_number=${encodeURIComponent(orderNum)}`);
@@ -773,8 +964,50 @@
         const dateStr = formatDate(order.created_at);
         modalOrderDate.textContent = `Placed on ${dateStr}`;
         
+        // Render Timeline
         const steps = getTimelineSteps(order);
         renderTimeline(steps, container);
+        
+        // Render Items
+        itemsList.innerHTML = order.items.map(item => {
+          const portion = item.portion_name ? ` (${item.portion_name})` : '';
+          const imgUrl = item.image || 'assets/chicken_wings_1780138004264.png';
+          return `
+            <div class="modal-item-row">
+              <div class="modal-item-left">
+                <img class="modal-item-img" src="${imgUrl}" alt="${item.item_name}">
+                <div class="modal-item-details">
+                  <span class="modal-item-name">${item.item_name}${portion}</span>
+                  <span class="modal-item-qty">Qty: ${item.quantity} × ₹${Math.round(item.unit_price)}</span>
+                </div>
+              </div>
+              <span class="modal-item-price">₹${Math.round(item.line_total)}</span>
+            </div>
+          `;
+        }).join('');
+        
+        // Render Billing
+        subtotalEl.textContent = `₹${Math.round(order.subtotal)}`;
+        taxEl.textContent = `₹${Math.round(order.tax)}`;
+        deliveryEl.textContent = `₹${Math.round(order.delivery_fee)}`;
+        if (parseFloat(order.discount) > 0) {
+          discountEl.textContent = `-₹${Math.round(order.discount)}`;
+          discountRow.style.display = 'flex';
+        } else {
+          discountRow.style.display = 'none';
+        }
+        totalEl.textContent = `₹${Math.round(order.total)}`;
+        
+        // Render Delivery Info
+        let notesHtml = order.delivery_notes 
+          ? `<div style="margin-top:0.4rem; padding:0.4rem 0.6rem; background:rgba(255,248,238,0.03); border-radius:4px; font-style:italic;">"${order.delivery_notes}"</div>` 
+          : '';
+        deliveryInfoEl.innerHTML = `
+          <div class="delivery-name">${order.delivery_name}</div>
+          <div>📞 ${order.delivery_phone}</div>
+          <div style="margin-top:0.2rem;">📍 ${order.delivery_address}, ${order.delivery_city} - ${order.delivery_pin}</div>
+          ${notesHtml}
+        `;
       } else {
         container.innerHTML = '<div style="text-align:center; color:#ef4444; padding:2rem 0; font-size:0.9rem;">Failed to load order.</div>';
       }
