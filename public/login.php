@@ -1,3 +1,41 @@
+<?php
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth_check.php';
+
+start_customer_session();
+
+// If already logged in, redirect to index.html
+if (get_logged_in_user() !== null) {
+    header('Location: index.html');
+    exit;
+}
+
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = sanitize($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (!$email || !$password) {
+        $error = 'Both email and password are required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Invalid email address format.';
+    } else {
+        $db = get_db();
+        $stmt = $db->prepare("SELECT id, full_name, email, phone, password, address FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            unset($user['password']); // don't keep password hash in session
+            $_SESSION['user'] = $user;
+            header('Location: index.html');
+            exit;
+        } else {
+            $error = 'Invalid email or password.';
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,73 +257,78 @@
     padding: 3rem 2.5rem;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(
-      160deg,
-      rgba(30, 22, 14, 0.95) 0%,
-      rgba(20, 14, 8, 0.98) 50%,
-      rgba(15, 10, 6, 1) 100%
-    );
-    border-left: 1px solid rgba(255,184,0,0.06);
+    background: linear-gradient(135deg, var(--gold) 0%, #E6A600 100%);
+    border-left: 1px solid rgba(255,184,0,0.2);
   }
 
   /* Subtle warm glow on brand panel */
   .login-right::before {
     content: '';
     position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255,184,0,0.06) 0%, transparent 70%);
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.25), transparent 60%);
     pointer-events: none;
+    z-index: 2;
   }
 
   .brand-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 1.5rem;
-    text-align: center;
+    text-align: left;
+    width: 100%;
+    max-width: 400px;
   }
 
   .brand-logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.4rem;
-    color: var(--cream);
+    font-size: 2.8rem;
+    color: var(--dark);
     letter-spacing: 0.06em;
   }
   .brand-logo span { color: var(--fire); }
 
-  .brand-tagline {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(255,248,238,0.35);
-    font-weight: 400;
-  }
-
-  .brand-image {
-    width: 70%;
-    max-width: 360px;
-    margin: 1.5rem 0;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-    animation: floatImg 4s ease-in-out infinite;
-  }
-
-  @keyframes floatImg {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
   .brand-accent-line {
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--fire), var(--gold));
-    opacity: 0.6;
+    width: 60px;
+    height: 3px;
+    background: var(--fire);
+    opacity: 0.9;
+    border-radius: 2px;
+  }
+
+  .marketing-text {
+    margin-top: 1rem;
+  }
+  .marketing-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--dark);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .marketing-text h2 span { color: var(--fire); }
+  
+  .marketing-text p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(8,6,4,0.85);
+    font-weight: 500;
+  }
+
+  /* Error container design */
+  .error-box {
+    color: #ef4444;
+    font-size: 0.85rem;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
   }
 
   /* ── RESPONSIVE ── */
@@ -306,6 +349,19 @@
     .login-back {
       margin-bottom: 2rem;
     }
+  }
+
+  /* Validation message styling */
+  .error-msg {
+    color: #ef4444;
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+    display: block;
+    min-height: 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .form-group input.invalid {
+    border-bottom-color: #ef4444 !important;
   }
 </style>
 </head>
@@ -328,16 +384,22 @@
       <h1 class="login-title">Sign In</h1>
       <p class="login-subtitle">Welcome back to The Chicken Co.</p>
 
-      <form class="login-form" id="login-form">
+      <?php if (!empty($error)): ?>
+        <div class="error-box"><?php echo htmlspecialchars($error); ?></div>
+      <?php endif; ?>
+
+      <form class="login-form" id="login-form" method="POST" action="login.php" novalidate>
 
         <div class="form-group">
           <label for="login-email">Email Address</label>
-          <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+          <input type="email" id="login-email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required autocomplete="email">
+          <span class="error-msg" id="err-login-email"></span>
         </div>
 
         <div class="form-group">
           <label for="login-password">Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+          <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password">
+          <span class="error-msg" id="err-login-password"></span>
         </div>
 
         <div class="forgot-row">
@@ -365,7 +427,7 @@
 
       <!-- BOTTOM TEXT -->
       <p class="login-footer-text">
-        Don't have an account? <a href="#">Create one</a>
+        Don't have an account? <a href="register.php">Create one</a>
       </p>
 
     </div>
@@ -376,15 +438,18 @@
     <div class="brand-content">
       <div class="brand-logo">The<span>.</span>Chicken<span>.</span>Co</div>
       <div class="brand-accent-line"></div>
-      <img src="assets/chicken_burger_1780138021736.png" alt="Delicious Chicken Burger" class="brand-image">
-      <p class="brand-tagline">Born Fresh. Fried Perfect.</p>
+      
+      <div class="marketing-text">
+        <h2>Craving That <span>Crunch?</span></h2>
+        <p>Sign in to unlock exclusive offers, track your favorite orders in real-time, and get your chicken fixed faster than ever.</p>
+      </div>
+
     </div>
   </div>
 
 </section>
 
 <script src="assets/cart.js"></script>
-<script src="assets/auth.js"></script>
 <script>
   /* ── CURSOR ── */
   const cur = document.getElementById('cur');
@@ -418,11 +483,54 @@
     });
   });
 
-  /* ── MOCK LOGIN ── */
-  document.getElementById('login-form').addEventListener('submit', e => {
-    e.preventDefault();
-    localStorage.setItem('chicken_co_auth', 'true');
-    window.location.href = 'index.html';
+  // ── FORM VALIDATION ──
+  const loginForm = document.getElementById('login-form');
+  const emailInput = document.getElementById('login-email');
+  const passwordInput = document.getElementById('login-password');
+
+  function validateEmail(email) {
+    if (!email) return "Email address is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Please enter a valid email address.";
+    return "";
+  }
+
+  function validatePassword(pass) {
+    if (!pass) return "Password is required.";
+    return "";
+  }
+
+  function showError(inputEl, errEl, msg) {
+    if (msg) {
+      inputEl.classList.add('invalid');
+      errEl.textContent = msg;
+      return false;
+    } else {
+      inputEl.classList.remove('invalid');
+      errEl.textContent = '';
+      return true;
+    }
+  }
+
+  // Real-time input validation
+  emailInput.addEventListener('input', () => {
+    showError(emailInput, document.getElementById('err-login-email'), validateEmail(emailInput.value.trim()));
+  });
+
+  passwordInput.addEventListener('input', () => {
+    showError(passwordInput, document.getElementById('err-login-password'), validatePassword(passwordInput.value));
+  });
+
+  // Form submit check
+  loginForm.addEventListener('submit', (e) => {
+    const emailErr = validateEmail(emailInput.value.trim());
+    const passErr = validatePassword(passwordInput.value);
+
+    const isEmailValid = showError(emailInput, document.getElementById('err-login-email'), emailErr);
+    const isPassValid = showError(passwordInput, document.getElementById('err-login-password'), passErr);
+
+    if (!isEmailValid || !isPassValid) {
+      e.preventDefault();
+    }
   });
 </script>
 </body>

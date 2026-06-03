@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* ── GREETING CARD ── */
+  .profile-greeting {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem 1.8rem;
+    background: rgba(255,184,0,0.03);
+    border: 1px solid rgba(255,184,0,0.12);
+    border-radius: 14px;
+    margin-bottom: 1.6rem;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+  }
+  .profile-greeting-text h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--cream);
+    margin: 0 0 .2rem;
+  }
+  .profile-greeting-text p {
+    font-size: .92rem;
+    color: rgba(255,248,238,.5);
+    margin: 0;
+  }
+
+  /* ── QUICK ACTION LINKS ── */
+  .quick-actions {
+    display: flex;
+    gap: .85rem;
+    margin-bottom: 2.2rem;
+  }
+  .quick-action-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+    padding: .9rem .6rem;
+    border: 1px solid rgba(255,248,238,.1);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--cream);
+    transition: border-color .25s, background .25s, transform .2s;
+    cursor: pointer;
+  }
+  .quick-action-card:hover {
+    border-color: rgba(255,184,0,.35);
+    background: rgba(255,184,0,0.04);
+    transform: translateY(-2px);
+  }
+  .quick-action-card .qa-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+  .quick-action-card .qa-label {
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: .02em;
+    color: rgba(255,248,238,.7);
+    text-align: center;
+  }
+
+  /* ── SECTION LABELS ── */
+  .prof-section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: .12em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    padding-bottom: .45rem;
+    border-bottom: 1px solid rgba(255,184,0,.12);
+  }
+
+  /* ── FORM LAYOUT ── */
+  .prof-form-section {
+    margin-bottom: 2rem;
+  }
+
+  /* ── BUTTON ALIGN ── */
+  #profile-form .acc-submit {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .profile-greeting {
+      padding: 1.1rem 1.2rem;
+      gap: 1rem;
+    }
+    .profile-avatar {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      font-size: 1.5rem;
+    }
+    .profile-greeting-text h2 {
+      font-size: 1.15rem;
+    }
+    .quick-actions {
+      gap: .55rem;
+    }
+    .quick-action-card {
+      padding: .7rem .4rem;
+    }
+    .quick-action-card .qa-icon {
+      font-size: 1.15rem;
+    }
+    .quick-action-card .qa-label {
+      font-size: .7rem;
+    }
+  }
+
+  /* ── TABS SYSTEM ── */
+  .profile-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255,248,238,0.1);
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+  }
+  .profile-tab-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,248,238,0.4);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 0;
+    cursor: none;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .profile-tab-btn:hover {
+    color: var(--cream);
+  }
+  .profile-tab-btn.active {
+    color: var(--gold);
+  }
+  .profile-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+  }
+  
+  .profile-tab-content {
+    display: none;
+  }
+  .profile-tab-content.active {
+    display: block;
+    animation: tabFadeIn 0.4s ease forwards;
+  }
+  @keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── ADDRESS TAB STYLING ── */
+  .addresses-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,184,0,0.12);
+    padding-bottom: 0.45rem;
+  }
+  .addresses-section-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+  .add-address-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .add-address-btn:hover {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  .address-form-panel {
+    background: rgba(255,248,238,0.02);
+    border: 1px solid rgba(255,248,238,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    animation: slideDown 0.3s ease-out forwards;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .address-form-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .cancel-address-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,248,238,0.4);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: none;
+    transition: color 0.3s;
+  }
+  .cancel-address-btn:hover {
+    color: #ef4444;
+  }
+
+  /* Address Card Styles (Flipkart style layout) */
+  .addresses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .address-card {
+    background: rgba(8,6,4,0.4);
+    border: 1px solid rgba(255,248,238,0.08);
+    border-radius: 12px;
+    padding: 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .address-card:hover {
+    border-color: rgba(255,184,0,0.25);
+  }
+  .address-card.default {
+    border-color: rgba(255,184,0,0.5);
+    background: rgba(255,184,0,0.02);
+  }
+  
+  .address-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .address-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .address-badge {
+    background: rgba(255,184,0,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(255,184,0,0.2);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .address-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--cream);
+  }
+  .address-city-pin {
+    font-size: 0.88rem;
+    color: rgba(255,248,238,0.6);
+  }
+  .address-notes {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: rgba(255,248,238,0.45);
+    margin-top: 0.2rem;
+  }
+  
+  .address-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.8rem;
+    margin-left: 1.5rem;
+  }
+  .address-action-btn {
+    background: transparent;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: none;
+    transition: color 0.3s;
+  }
+  .btn-set-default {
+    color: rgba(255,184,0,0.6);
+  }
+  .btn-set-default:hover {
+    color: var(--gold);
+  }
+  .btn-delete-addr {
+    color: rgba(239,68,68,0.6);
+  }
+  .btn-delete-addr:hover {
+    color: #ef4444;
+  }
+  
+  /* Validation message styling */
+  .error-msg {
+    color: #ef4444;
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+    display: block;
+    min-height: 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .acc-input.invalid {
+    border-bottom-color: #ef4444 !important;
+  }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon" style="color:var(--gold);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.php" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── PROFILE PAGE ── -->
+<section id="account-page">
+  <div class="acc-container" style="max-width:680px;">
+
+    <div class="acc-page-header">
+      <h1>My Profile</h1>
+      <p>Manage your personal details and delivery address</p>
+    </div>
+
+    <!-- Greeting Card -->
+    <div class="profile-greeting">
+      <div class="profile-avatar" id="profile-avatar">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <div class="profile-greeting-text">
+        <h2 id="greeting-name">Welcome, Guest</h2>
+        <p id="greeting-email">Update your details below</p>
+      </div>
+    </div>
+
+    <!-- Quick Action Links -->
+    <div class="quick-actions">
+      <a href="orders.html" class="quick-action-card">
+        <span class="qa-icon">🛒</span>
+        <span class="qa-label">My Orders</span>
+      </a>
+      <a href="offers.html" class="quick-action-card">
+        <span class="qa-icon">🎁</span>
+        <span class="qa-label">Offers</span>
+      </a>
+      <a href="#addresses" class="quick-action-card" id="qa-saved-addresses-btn">
+        <span class="qa-icon">📍</span>
+        <span class="qa-label">Saved Address</span>
+      </a>
+    </div>
+
+    <!-- Tabs Header -->
+    <div class="profile-tabs">
+      <button type="button" class="profile-tab-btn active" data-tab="personal">Personal Details</button>
+      <button type="button" class="profile-tab-btn" data-tab="addresses">Saved Addresses</button>
+    </div>
+
+    <!-- Tab 1: Personal Details -->
+    <div class="profile-tab-content active" id="tab-personal">
+      <form class="acc-form" id="profile-form" novalidate>
+        <div class="prof-form-section">
+          <div class="acc-form-row">
+            <div class="acc-form-group">
+              <label class="acc-label">Full Name</label>
+              <input type="text" id="prof-name" class="acc-input" placeholder="John Doe" required>
+              <span class="error-msg" id="err-prof-name"></span>
+            </div>
+            <div class="acc-form-group">
+              <label class="acc-label">Phone Number</label>
+              <input type="tel" id="prof-phone" class="acc-input" placeholder="9876543210" required>
+              <span class="error-msg" id="err-prof-phone"></span>
+            </div>
+          </div>
+          <div class="acc-form-group">
+            <label class="acc-label">Email Address</label>
+            <input type="email" id="prof-email" class="acc-input" placeholder="john@example.com" readonly style="opacity:0.65; cursor:none;">
+          </div>
+        </div>
+        <button type="submit" class="acc-submit">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Tab 2: Saved Addresses -->
+    <div class="profile-tab-content" id="tab-addresses">
+      <div class="addresses-section-header">
+        <h3>Saved Addresses</h3>
+        <button type="button" class="add-address-btn" id="show-add-address-btn">+ Add New Address</button>
+      </div>
+
+      <!-- Add Address Form (Hidden by default) -->
+      <form class="acc-form address-form-panel" id="add-address-form" style="display: none;" novalidate>
+        <div class="prof-form-section">
+          <div class="acc-form-group">
+            <label class="acc-label">Street Address</label>
+            <input type="text" id="addr-line" class="acc-input" placeholder="House No, Building, Street Area" required>
+            <span class="error-msg" id="err-addr-line"></span>
+          </div>
+          <div class="acc-form-row">
+            <div class="acc-form-group">
+              <label class="acc-label">City</label>
+              <input type="text" id="addr-city" class="acc-input" placeholder="Mumbai" required>
+              <span class="error-msg" id="err-addr-city"></span>
+            </div>
+            <div class="acc-form-group">
+              <label class="acc-label">PIN Code</label>
+              <input type="text" id="addr-pin" class="acc-input" placeholder="400001" required>
+              <span class="error-msg" id="err-addr-pin"></span>
+            </div>
+          </div>
+          <div class="acc-form-group">
+            <label class="acc-label">Delivery Notes / Instructions (Optional)</label>
+            <textarea id="addr-notes" class="acc-input" placeholder="e.g. Ring the bell, leave at gate" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="address-form-actions">
+          <button type="submit" class="acc-submit" style="margin:0;">Save Address</button>
+          <button type="button" class="cancel-address-btn" id="cancel-add-address-btn">Cancel</button>
+        </div>
+      </form>
+
+      <!-- Addresses List Container -->
+      <div class="addresses-list" id="addresses-list-container">
+        <p class="loading-text" style="color:rgba(255,248,238,0.5); font-size:0.9rem;">Loading saved addresses...</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  /* CURSOR */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  document.querySelectorAll('button,a,input,textarea').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+  });
+
+  // ── PROFILE & TABS LOGIC ──
+  const profileForm = document.getElementById('profile-form');
+  const profName = document.getElementById('prof-name');
+  const profPhone = document.getElementById('prof-phone');
+  const profEmail = document.getElementById('prof-email');
+  const avatarEl = document.getElementById('profile-avatar');
+  const greetName = document.getElementById('greeting-name');
+  const greetEmail = document.getElementById('greeting-email');
+
+  const addAddressForm = document.getElementById('add-address-form');
+  const addrLine = document.getElementById('addr-line');
+  const addrCity = document.getElementById('addr-city');
+  const addrPin = document.getElementById('addr-pin');
+  const addrNotes = document.getElementById('addr-notes');
+  const addressesContainer = document.getElementById('addresses-list-container');
+
+  // Tab navigation elements
+  const tabButtons = document.querySelectorAll('.profile-tab-btn');
+  const tabContents = document.querySelectorAll('.profile-tab-content');
+  const qaSavedAddrBtn = document.getElementById('qa-saved-addresses-btn');
+
+  // Validation functions
+  function validateName(name) {
+    if (!name || name.trim().length < 3) return "Name must be at least 3 characters.";
+    if (!/^[a-zA-Z\s]+$/.test(name)) return "Name must contain letters and spaces only.";
+    return "";
+  }
+
+  function validatePhone(phone) {
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length !== 10) return "Phone number must be exactly 10 digits.";
+    return "";
+  }
+
+  function validateAddress(line) {
+    if (!line || line.trim().length < 5) return "Street address must be at least 5 characters.";
+    return "";
+  }
+
+  function validateCity(city) {
+    if (!city || city.trim().length < 2) return "City must be at least 2 characters.";
+    return "";
+  }
+
+  function validatePin(pin) {
+    if (!/^\d{6}$/.test(pin)) return "PIN code must be exactly 6 digits.";
+    return "";
+  }
+
+  function showError(inputEl, errEl, msg) {
+    if (msg) {
+      inputEl.classList.add('invalid');
+      errEl.textContent = msg;
+    } else {
+      inputEl.classList.remove('invalid');
+      errEl.textContent = '';
+    }
+  }
+
+  // Real-time inline validations for Profile Details
+  profName.addEventListener('input', () => {
+    showError(profName, document.getElementById('err-prof-name'), validateName(profName.value));
+    updateGreeting(profName.value, profEmail.value);
+  });
+
+  profPhone.addEventListener('input', () => {
+    showError(profPhone, document.getElementById('err-prof-phone'), validatePhone(profPhone.value));
+  });
+
+  // Real-time inline validations for Address Form
+  addrLine.addEventListener('input', () => {
+    showError(addrLine, document.getElementById('err-addr-line'), validateAddress(addrLine.value));
+  });
+  addrCity.addEventListener('input', () => {
+    showError(addrCity, document.getElementById('err-addr-city'), validateCity(addrCity.value));
+  });
+  addrPin.addEventListener('input', () => {
+    showError(addrPin, document.getElementById('err-addr-pin'), validatePin(addrPin.value));
+  });
+
+  // Toggle Address panel
+  const showAddBtn = document.getElementById('show-add-address-btn');
+  const cancelAddBtn = document.getElementById('cancel-add-address-btn');
+
+  showAddBtn.addEventListener('click', () => {
+    addAddressForm.style.display = 'block';
+    showAddBtn.style.display = 'none';
+  });
+
+  cancelAddBtn.addEventListener('click', () => {
+    addAddressForm.style.display = 'none';
+    addAddressForm.reset();
+    showAddBtn.style.display = 'block';
+    // Clear validation errors
+    showError(addrLine, document.getElementById('err-addr-line'), '');
+    showError(addrCity, document.getElementById('err-addr-city'), '');
+    showError(addrPin, document.getElementById('err-addr-pin'), '');
+  });
+
+  // Tab Switch logic
+  function switchTab(tabName) {
+    tabButtons.forEach(btn => {
+      if (btn.dataset.tab === tabName) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+
+    tabContents.forEach(content => {
+      if (content.id === `tab-${tabName}`) content.classList.add('active');
+      else content.classList.remove('active');
+    });
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.tab);
+      window.location.hash = btn.dataset.tab;
+    });
+  });
+
+  qaSavedAddrBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchTab('addresses');
+    window.location.hash = 'addresses';
+    const tabEl = document.getElementById('tab-addresses');
+    tabEl.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  function updateGreeting(name, email) {
+    if (name) {
+      const initial = name.trim().charAt(0).toUpperCase();
+      avatarEl.textContent = initial;
+      greetName.textContent = 'Hey, ' + name.split(' ')[0] + '!';
+    } else {
+      avatarEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+      greetName.textContent = 'Welcome, Guest';
+    }
+    greetEmail.textContent = email || 'Update your details below';
+  }
+
+  // Load profile from API
+  async function loadProfile() {
+    try {
+      const res = await fetch('api/user/profile.php');
+      if (res.status === 401) {
+        window.location.href = 'login.php';
+        return;
+      }
+      const data = await res.json();
+      if (data.success && data.user) {
+        const user = data.user;
+        profName.value = user.full_name || '';
+        profPhone.value = user.phone || '';
+        profEmail.value = user.email || '';
+        updateGreeting(user.full_name, user.email);
+      } else {
+        window.location.href = 'login.php';
+      }
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    }
+  }
+
+  // Load addresses from API
+  async function loadAddresses() {
+    try {
+      const res = await fetch('api/user/addresses.php');
+      const data = await res.json();
+      if (data.success && data.addresses) {
+        renderAddresses(data.addresses);
+      } else {
+        addressesContainer.innerHTML = '<p class="error-text" style="color:#ef4444; font-size:0.9rem;">Failed to load saved addresses.</p>';
+      }
+    } catch (err) {
+      console.error('Failed to load addresses:', err);
+      addressesContainer.innerHTML = '<p class="error-text" style="color:#ef4444; font-size:0.9rem;">Error connecting to addresses API.</p>';
+    }
+  }
+
+  function renderAddresses(addresses) {
+    if (addresses.length === 0) {
+      addressesContainer.innerHTML = '<p style="color:rgba(255,248,238,0.4); font-size:0.9rem; text-align:center; padding:2rem 0;">No saved addresses found. Add one above!</p>';
+      return;
+    }
+
+    addressesContainer.innerHTML = addresses.map(addr => `
+      <div class="address-card ${addr.is_default ? 'default' : ''}">
+        <div class="address-card-info">
+          <div class="address-card-header">
+            <span class="address-text" style="font-weight: 600;">${addr.is_default ? 'Default Address' : 'Saved Address'}</span>
+            ${addr.is_default ? '<span class="address-badge">Default</span>' : ''}
+          </div>
+          <span class="address-text">${addr.address_line}</span>
+          <span class="address-city-pin">${addr.city} - ${addr.pin_code}</span>
+          ${addr.delivery_notes ? `<span class="address-notes">Note: ${addr.delivery_notes}</span>` : ''}
+        </div>
+        <div class="address-card-actions">
+          ${!addr.is_default ? `
+            <button type="button" class="address-action-btn btn-set-default" onclick="setDefaultAddress(${addr.id})">Set as Default</button>
+          ` : ''}
+          <button type="button" class="address-action-btn btn-delete-addr" onclick="deleteAddress(${addr.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Re-init cursor hovers on new address actions
+    document.querySelectorAll('.address-action-btn').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+      el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+    });
+  }
+
+  // Actions
+  window.setDefaultAddress = async function(id) {
+    try {
+      const res = await fetch('api/user/addresses.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set_default', id: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadAddresses();
+      } else {
+        alert(data.message || 'Failed to update default address.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  window.deleteAddress = async function(id) {
+    if (!confirm('Are you sure you want to delete this address?')) return;
+    try {
+      const res = await fetch('api/user/addresses.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadAddresses();
+      } else {
+        alert(data.message || 'Failed to delete address.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Submit Profile Form
+  profileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nameErr = validateName(profName.value);
+    const phoneErr = validatePhone(profPhone.value);
+
+    showError(profName, document.getElementById('err-prof-name'), nameErr);
+    showError(profPhone, document.getElementById('err-prof-phone'), phoneErr);
+
+    if (nameErr || phoneErr) return;
+
+    const btn = profileForm.querySelector('.acc-submit');
+    const orig = btn.textContent;
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('api/user/profile.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: profName.value,
+          phone:     profPhone.value,
+          address:   "" // Address is now handled separately via addresses API
+        })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        updateGreeting(profName.value, profEmail.value);
+        btn.textContent = 'Saved ✓';
+        btn.style.background = 'var(--gold)';
+        btn.style.color = 'var(--dark)';
+      } else {
+        alert(data.message || 'Failed to update profile');
+        btn.textContent = orig;
+      }
+    } catch (err) {
+      alert('An error occurred while updating profile.');
+      btn.textContent = orig;
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { 
+        btn.textContent = orig; 
+        btn.style.background = ''; 
+        btn.style.color = ''; 
+      }, 2000);
+    }
+  });
+
+  // Submit Add Address Form
+  addAddressForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const lineErr = validateAddress(addrLine.value);
+    const cityErr = validateCity(addrCity.value);
+    const pinErr = validatePin(addrPin.value);
+
+    showError(addrLine, document.getElementById('err-addr-line'), lineErr);
+    showError(addrCity, document.getElementById('err-addr-city'), cityErr);
+    showError(addrPin, document.getElementById('err-addr-pin'), pinErr);
+
+    if (lineErr || cityErr || pinErr) return;
+
+    const btn = addAddressForm.querySelector('button[type="submit"]');
+    const orig = btn.textContent;
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('api/user/addresses.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'add',
+          address_line: addrLine.value,
+          city: addrCity.value,
+          pin_code: addrPin.value,
+          delivery_notes: addrNotes.value
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        addAddressForm.reset();
+        addAddressForm.style.display = 'none';
+        showAddBtn.style.display = 'block';
+        await loadAddresses();
+      } else {
+        alert(data.message || 'Failed to add address.');
+      }
+    } catch (err) {
+      alert('An error occurred while saving address.');
+    } finally {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }
+  });
+
+  // Initial load
+  loadProfile();
+  loadAddresses();
+
+  // Check hash on load
+  const hash = window.location.hash;
+  if (hash === '#addresses') {
+    switchTab('addresses');
+  } else if (hash === '#personal') {
+    switchTab('personal');
+  }
+</script>
+</body>
+</html>

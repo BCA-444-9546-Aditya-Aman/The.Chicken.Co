@@ -132,7 +132,7 @@
         <a href="profile.html" class="auth-required">My Profile</a>
         <a href="orders.html" class="auth-required">My Orders</a>
         <a href="offers.html" class="auth-required">Offers</a>
-        <a href="login.html" class="auth-hidden">Login</a>
+        <a href="login.php" class="auth-hidden">Login</a>
         <a href="#" class="auth-required logout-btn">Logout</a>
       </div>
     </div>
@@ -150,52 +150,12 @@
       </div>
 
       <!-- Featured offer banner -->
-      <div class="featured-banner">
-        <div class="featured-left">
-          <span class="big-num">20%</span>
-          <span class="pct">OFF</span>
-        </div>
-        <div class="featured-right">
-          <h3>OFF YOUR FIRST ORDER</h3>
-          <p>Welcome to The Chicken Co! Use this code on your first order and enjoy 20% off on every item across the menu — buckets, tenders, sides, all of it.</p>
-          <button class="copy-btn" data-code="CHICKEN20">CHICKEN20</button>
-        </div>
+      <div id="featured-offer-container">
+        <div class="acc-empty">Loading offers...</div>
       </div>
 
       <!-- Regular coupon cards -->
-      <div class="coupon-list">
-
-        <div class="offer-card">
-          <div class="offer-emoji">🍗</div>
-          <div class="offer-info">
-            <h4>Free Spicy Tenders</h4>
-            <p>Get a free half plate of Spicy Tenders on orders above ₹500.</p>
-            <div class="validity">Valid till June 30, 2026</div>
-          </div>
-          <button class="copy-btn" data-code="FREETENDERS">FREETENDERS</button>
-        </div>
-
-        <div class="offer-card">
-          <div class="offer-emoji">👨‍👩‍👧‍👦</div>
-          <div class="offer-info">
-            <h4>₹100 off Family Bucket</h4>
-            <p>Flat ₹100 discount on any Family Bucket order. Feed the whole crew for less.</p>
-            <div class="validity">Valid till June 30, 2026</div>
-          </div>
-          <button class="copy-btn" data-code="FAMILY100">FAMILY100</button>
-        </div>
-
-        <div class="offer-card">
-          <div class="offer-emoji">🚚</div>
-          <div class="offer-info">
-            <h4>Free Delivery</h4>
-            <p>Zero delivery charges on orders above ₹399. No code limits — use it every time.</p>
-            <div class="validity">Valid till June 30, 2026</div>
-          </div>
-          <button class="copy-btn" data-code="FREEDELIVERY">FREEDELIVERY</button>
-        </div>
-
-      </div>
+      <div class="coupon-list" id="coupons-list-container"></div>
 
       <!-- Bottom CTA -->
       <div class="offers-cta">
@@ -246,20 +206,105 @@
 <script src="assets/cart.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-  /* ── COPY COUPON CODE ── */
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const code = btn.getAttribute('data-code');
-      navigator.clipboard.writeText(code);
-      const original = btn.textContent;
-      btn.textContent = 'COPIED ✓';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.classList.remove('copied');
-      }, 2000);
+  // ── OFFERS LOADING ──
+  const featuredContainer = document.getElementById('featured-offer-container');
+  const couponsContainer = document.getElementById('coupons-list-container');
+
+  // Format Date (e.g. "June 30, 2026")
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  // Bind copy clipboard event
+  function initCopyButtons() {
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.getAttribute('data-code');
+        navigator.clipboard.writeText(code);
+        const original = btn.textContent;
+        btn.textContent = 'COPIED ✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
     });
-  });
+  }
+
+  async function loadOffers() {
+    try {
+      const res = await fetch('api/offers/index.php');
+      const data = await res.json();
+      
+      if (!data.success || !data.offers || data.offers.length === 0) {
+        featuredContainer.innerHTML = '<div class="acc-empty">No active offers or coupons available right now. Check back soon!</div>';
+        couponsContainer.innerHTML = '';
+        return;
+      }
+
+      const offers = data.offers;
+      
+      // Let's feature the first percent-based or WELCOME coupon, or just the first coupon in the list
+      let featuredOffer = offers.find(o => o.code.toLowerCase().includes('welcome') || o.code.toLowerCase().includes('chicken20') || o.code.toLowerCase().includes('welcome20'));
+      if (!featuredOffer) {
+        featuredOffer = offers[0];
+      }
+
+      // Remaining offers go into the list
+      const remainingOffers = offers.filter(o => o.id !== featuredOffer.id);
+
+      // Render Featured Offer
+      const discVal = Math.round(featuredOffer.discount_value);
+      const isPercent = featuredOffer.discount_type === 'percent';
+      featuredContainer.innerHTML = `
+        <div class="featured-banner">
+          <div class="featured-left">
+            <span class="big-num">${isPercent ? discVal + '%' : '₹' + discVal}</span>
+            <span class="pct">${isPercent ? 'OFF' : 'OFF'}</span>
+          </div>
+          <div class="featured-right">
+            <h3>${featuredOffer.title.toUpperCase()}</h3>
+            <p>${featuredOffer.description} ${featuredOffer.min_order_value > 0 ? `Minimum order value: ₹${Math.round(featuredOffer.min_order_value)}.` : ''}</p>
+            <button class="copy-btn" data-code="${featuredOffer.code}">${featuredOffer.code}</button>
+          </div>
+        </div>
+      `;
+
+      // Render Coupon List
+      if (remainingOffers.length > 0) {
+        let couponsHtml = '';
+        remainingOffers.forEach(offer => {
+          const emoji = offer.code.toLowerCase().includes('delivery') ? '🚚' : 
+                        offer.code.toLowerCase().includes('bucket') || offer.code.toLowerCase().includes('crispy') ? '🍗' : '🎁';
+          
+          couponsHtml += `
+            <div class="offer-card">
+              <div class="offer-emoji">${emoji}</div>
+              <div class="offer-info">
+                <h4>${offer.title}</h4>
+                <p>${offer.description} ${offer.min_order_value > 0 ? `Valid on orders above ₹${Math.round(offer.min_order_value)}.` : ''}</p>
+                <div class="validity">Valid till ${formatDate(offer.valid_until)}</div>
+              </div>
+              <button class="copy-btn" data-code="${offer.code}">${offer.code}</button>
+            </div>
+          `;
+        });
+        couponsContainer.innerHTML = couponsHtml;
+      } else {
+        couponsContainer.innerHTML = '';
+      }
+
+      initCopyButtons();
+
+    } catch (err) {
+      console.error(err);
+      featuredContainer.innerHTML = '<div class="acc-empty">Failed to load offers. Please try again later.</div>';
+    }
+  }
+
+  loadOffers();
 
   /* ── CURSOR ── */
   const cur = document.getElementById('cur');
@@ -274,3 +319,6 @@
 </script>
 </body>
 </html>
+</body>
+</html>
+

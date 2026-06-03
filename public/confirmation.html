@@ -66,7 +66,7 @@
         <a href="profile.html" class="auth-required">My Profile</a>
         <a href="orders.html" class="auth-required">My Orders</a>
         <a href="offers.html" class="auth-required">Offers</a>
-        <a href="login.html" class="auth-hidden">Login</a>
+        <a href="login.php" class="auth-hidden">Login</a>
         <a href="#" class="auth-required logout-btn">Logout</a>
       </div>
     </div>
@@ -139,27 +139,117 @@
 
 <script src="assets/cart.js"></script>
 <script>
-  // Generate random order ID
-  document.getElementById('order-id').textContent += Math.floor(10000 + Math.random() * 90000);
-
-  // Countdown Logic (8 minutes)
-  let timeInSeconds = 8 * 60;
+  // Get order details from API for countdown and status
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderNum = urlParams.get('order');
+  const orderIdEl = document.getElementById('order-id');
   const timerElement = document.getElementById('countdown');
+  const statusEl = document.querySelector('.order-details .detail-row:nth-child(2) .detail-val');
   
-  const timer = setInterval(() => {
+  let timerInterval = null;
+
+  if (orderNum) {
+    orderIdEl.textContent = orderNum;
+    initTimer(orderNum);
+    loadOrderCountdown(orderNum);
+  } else {
+    orderIdEl.textContent = '#' + Math.floor(10000 + Math.random() * 90000);
+    startTimer(8 * 60);
+  }
+
+  function initTimer(num) {
+    const totalSeconds = 8 * 60;
+    const storageKey = `order_timer_start_${num}`;
+    let startTime = localStorage.getItem(storageKey);
+
+    if (!startTime) {
+      startTime = Date.now().toString();
+      localStorage.setItem(storageKey, startTime);
+    }
+
+    const elapsedSeconds = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+    const remainingSeconds = Math.max(0, totalSeconds - elapsedSeconds);
+
+    if (remainingSeconds <= 0) {
+      timerElement.textContent = "Ready!";
+      timerElement.style.color = "var(--gold)";
+    } else {
+      startTimer(remainingSeconds);
+    }
+  }
+
+  async function loadOrderCountdown(num) {
+    try {
+      const res = await fetch(`api/orders/history.php?order_number=${encodeURIComponent(num)}`);
+      const data = await res.json();
+      if (data.success && data.order) {
+        const order = data.order;
+        if (statusEl) {
+          statusEl.textContent = order.status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+        
+        if (order.status === 'delivered') {
+          if (timerInterval) clearInterval(timerInterval);
+          timerElement.textContent = "Delivered!";
+          timerElement.style.color = "var(--gold)";
+        } else if (order.status === 'cancelled') {
+          if (timerInterval) clearInterval(timerInterval);
+          timerElement.textContent = "Cancelled";
+          timerElement.style.color = "#ef4444";
+        } else {
+          // Sync client-side timer with server status/remaining time
+          const serverRemaining = parseInt(order.remaining_seconds) || 0;
+          const storageKey = `order_timer_start_${num}`;
+          const localStart = localStorage.getItem(storageKey);
+          const currentLocalRemaining = localStart 
+            ? Math.max(0, 8 * 60 - Math.floor((Date.now() - parseInt(localStart)) / 1000))
+            : 8 * 60;
+          
+          // If they differ by more than 10 seconds, align local storage with server
+          if (Math.abs(currentLocalRemaining - serverRemaining) > 10) {
+            const adjustedStart = Date.now() - (8 * 60 - serverRemaining) * 1000;
+            localStorage.setItem(storageKey, adjustedStart.toString());
+            startTimer(serverRemaining);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load order from server:", err);
+    }
+  }
+
+  function startTimer(seconds) {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    
+    let timeInSeconds = seconds;
+    
+    // Initial display
+    const initMinutes = Math.floor(timeInSeconds / 60);
+    const initSecs = timeInSeconds % 60;
+    timerElement.textContent = `${String(initMinutes).padStart(2, '0')}:${String(initSecs).padStart(2, '0')}`;
+
     if (timeInSeconds <= 0) {
-      clearInterval(timer);
       timerElement.textContent = "Ready!";
       timerElement.style.color = "var(--gold)";
       return;
     }
-    
-    timeInSeconds--;
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    
-    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }, 1000);
+
+    timerInterval = setInterval(() => {
+      if (timeInSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerElement.textContent = "Ready!";
+        timerElement.style.color = "var(--gold)";
+        return;
+      }
+      
+      timeInSeconds--;
+      const minutes = Math.floor(timeInSeconds / 60);
+      const secs = timeInSeconds % 60;
+      timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }, 1000);
+  }
 
   /* CURSOR RE-INIT FOR THIS PAGE */
   const cur = document.getElementById('cur');
@@ -176,3 +266,4 @@
 <script src="assets/auth.js"></script>
 </body>
 </html>
+

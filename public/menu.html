@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full Menu — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  #menu-page { padding: 10rem 3.5rem 6rem; min-height: calc(100vh - 200px); background: var(--dark); }
+  .menu-page-header { text-align: center; margin-bottom: 4rem; }
+  .menu-page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 5rem); color: var(--cream); letter-spacing: 0.02em; line-height: 1; }
+  .menu-page-header h1 span { color: var(--gold); }
+  .menu-page-header p { color: rgba(255,248,238,0.6); font-size: 1.1rem; max-width: 600px; margin: 1rem auto 0; }
+  
+  .menu-filters { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+  .filter-btn { background: transparent; border: 1px solid rgba(255,248,238,0.15); color: rgba(255,248,238,0.5); padding: 0.5rem 1.4rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; letter-spacing: 0.05em; cursor: none; transition: all 0.25s; }
+  .filter-btn:hover { border-color: rgba(255,184,0,0.4); color: var(--cream); }
+  .filter-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+  .mi.hidden { display: none; }
+  .mi.fade-in { animation: fadeIn 0.4s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media(max-width: 900px) {
+    #menu-page { padding: 8rem 1.4rem 4rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html" style="color:var(--gold);">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.php" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── FULL MENU SECTION ── -->
+<section id="menu-page">
+  <div class="menu-page-header reveal">
+    <h1>Our Full <span>Menu</span></h1>
+    <p>Everything is farm-raised, double-fried, and served hot. Explore our legendary offerings.</p>
+  </div>
+
+  <div class="menu-filters reveal">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="wings">Wings</button>
+    <button class="filter-btn" data-filter="burgers">Burgers</button>
+    <button class="filter-btn" data-filter="grilled">Grilled</button>
+    <button class="filter-btn" data-filter="combos">Combos</button>
+  </div>
+
+  <div class="menu-grid" id="menu-grid-container">
+    <div class="acc-empty" style="grid-column: 1/-1;">Loading menu items...</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script>
+  const gridContainer = document.getElementById('menu-grid-container');
+  let currentFilter = 'all';
+
+  // ── REVEAL ON SCROLL OBSERVATION ──
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // ── LOAD MENU ITEMS FROM API ──
+  async function loadMenu() {
+    try {
+      const res = await fetch('api/menu/items.php');
+      const data = await res.json();
+      
+      if (!data.success || !data.items || data.items.length === 0) {
+        gridContainer.innerHTML = '<div class="acc-empty" style="grid-column: 1/-1;">No menu items available at the moment.</div>';
+        return;
+      }
+
+      const items = data.items;
+      let gridHtml = '';
+      const delays = ['reveal-d1', 'reveal-d2', 'reveal-d3', 'reveal-d4'];
+
+      items.forEach((item, index) => {
+        const delayClass = delays[index % 4];
+        const defaultPortion = item.portions.find(p => p.is_default == 1) || item.portions[0];
+        const defaultPrice = defaultPortion ? Math.round(defaultPortion.price) : 0;
+        
+        // Build portion inputs
+        let portionsHtml = '';
+        if (item.portions && item.portions.length > 0) {
+          portionsHtml = `
+            <div class="portion-selector">
+              ${item.portions.map(p => `
+                <label class="portion-lbl">
+                  <input type="radio" name="portion-${item.id}" value="${p.portion_name}" data-price="${p.price}" ${p.id === defaultPortion.id ? 'checked' : ''}>
+                  <span class="portion-btn">${p.portion_name}</span>
+                </label>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        // Build item card
+        gridHtml += `
+          <div class="mi reveal ${delayClass}" data-category="${item.category}">
+            <div class="mi-img-wrapper">
+              ${item.tag ? `<div class="mi-tag">${item.tag}</div>` : ''}
+              <img src="${item.image}" alt="${item.name}" class="mi-img">
+            </div>
+            <div class="mi-content">
+              <div class="mi-header">
+                <h3 class="mi-name">${item.name}</h3>
+                <div class="mi-price">₹${defaultPrice}</div>
+              </div>
+              <div class="mi-desc">${item.description}</div>
+              ${portionsHtml}
+              <button class="add-to-cart-btn" data-id="${item.id}" data-name="${item.name}" data-price="${defaultPrice}" data-image="${item.image}">Add to Cart</button>
+            </div>
+          </div>
+        `;
+      });
+
+      gridContainer.innerHTML = gridHtml;
+
+      // Apply initial animations
+      document.querySelectorAll('.menu-grid .reveal').forEach(el => revealObserver.observe(el));
+      
+      // Apply filters if any button was clicked before load completes
+      applyFilter();
+
+    } catch (err) {
+      console.error(err);
+      gridContainer.innerHTML = '<div class="acc-empty" style="grid-column: 1/-1;">Failed to load the menu. Please check back later.</div>';
+    }
+  }
+
+  // ── FILTER TABS LOGIC ──
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.getAttribute('data-filter');
+      applyFilter();
+    });
+  });
+
+  function applyFilter() {
+    const items = document.querySelectorAll('.menu-grid .mi');
+    items.forEach(item => {
+      item.classList.remove('fade-in');
+      const cat = item.getAttribute('data-category');
+      if (currentFilter === 'all' || cat === currentFilter) {
+        item.classList.remove('hidden');
+        void item.offsetWidth; // force reflow
+        item.classList.add('fade-in');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  }
+
+  // ── PORTION PRICE DYNAMIC UPDATING ──
+  document.addEventListener('change', e => {
+    if (e.target.matches('.portion-lbl input[type="radio"]')) {
+      const card = e.target.closest('.mi-content');
+      if (card) {
+        const priceDisplay = card.querySelector('.mi-price');
+        const newPrice = e.target.getAttribute('data-price');
+        if (priceDisplay && newPrice) {
+          priceDisplay.textContent = '₹' + Math.round(newPrice);
+        }
+        
+        // Update price data attribute on Add to Cart button
+        const addBtn = card.querySelector('.add-to-cart-btn');
+        if (addBtn) {
+          addBtn.setAttribute('data-price', newPrice);
+        }
+      }
+    }
+  });
+
+  // ── ADD TO CART LOGIC ──
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.add-to-cart-btn');
+    if (btn) {
+      e.preventDefault();
+      
+      const card = btn.closest('.mi-content');
+      let finalId = btn.getAttribute('data-id');
+      let finalName = btn.getAttribute('data-name');
+      let finalPrice = parseFloat(btn.getAttribute('data-price'));
+      const finalImage = btn.getAttribute('data-image');
+      
+      if (card) {
+        const checkedPortion = card.querySelector('.portion-lbl input:checked');
+        if (checkedPortion) {
+          const portionLabel = checkedPortion.value;
+          const portionPrice = parseFloat(checkedPortion.getAttribute('data-price'));
+          
+          finalId = finalId + '-' + portionLabel;
+          finalName = finalName + ' (' + portionLabel + ')';
+          finalPrice = portionPrice;
+        }
+      }
+      
+      const itemData = {
+        id: finalId,
+        name: finalName,
+        price: finalPrice,
+        image: finalImage
+      };
+      
+      addToCart(itemData);
+      
+      // visual button feedback
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Added!';
+      btn.style.background = 'var(--gold)';
+      btn.style.color = 'var(--dark)';
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 1500);
+    }
+  });
+
+  // Start Loading
+  loadMenu();
+
+  /* CURSOR RE-INIT FOR THIS PAGE */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  
+  // Observe DOM for cursor hover bindings on dynamically loaded elements
+  const cursorObserver = new MutationObserver(() => {
+    document.querySelectorAll('button,a,.mi').forEach(el => {
+      // Ensure hover events are attached once
+      if (el.dataset.cursorBound) return;
+      el.dataset.cursorBound = "true";
+      
+      el.addEventListener('mouseenter', () => {
+        cur.style.width = '18px'; cur.style.height = '18px';
+        curR.style.width = '54px'; curR.style.height = '54px';
+        curR.style.borderColor = 'rgba(255,184,0,.65)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cur.style.width = '10px'; cur.style.height = '10px';
+        curR.style.width = '36px'; curR.style.height = '36px';
+        curR.style.borderColor = 'rgba(255,184,0,.45)';
+      });
+    });
+  });
+  cursorObserver.observe(document.body, { childList: true, subtree: true });
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>
+

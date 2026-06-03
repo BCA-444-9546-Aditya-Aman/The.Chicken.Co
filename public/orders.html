@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — The Chicken Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* ── ORDERS PAGE STYLES ── */
+
+  .orders-section { margin-bottom: 2.5rem; }
+
+  .orders-section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: .85rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    padding-left: 2px;
+  }
+
+  /* ── ORDER CARD ── */
+  .order-card {
+    background: rgba(255,248,238,0.02);
+    border: 1px solid rgba(255,248,238,0.08);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+    transition: border-color .25s ease, background .25s ease;
+  }
+  .order-card:hover {
+    border-color: rgba(255,184,0,.18);
+    background: rgba(255,248,238,0.035);
+  }
+
+  /* thumbnail */
+  .order-thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255,248,238,0.04);
+  }
+
+  /* middle info */
+  .order-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .order-id {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--cream);
+    margin: 0 0 .25rem;
+  }
+  .order-date {
+    font-size: .8rem;
+    color: rgba(255,248,238,0.45);
+    margin-bottom: .45rem;
+  }
+  .order-items {
+    font-size: .85rem;
+    color: rgba(255,248,238,0.65);
+    line-height: 1.45;
+    margin-bottom: .35rem;
+  }
+  .order-total {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+
+  /* right side */
+  .order-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .75rem;
+    flex-shrink: 0;
+  }
+
+  /* status badge */
+  .status-badge {
+    display: inline-block;
+    padding: .3rem .75rem;
+    border-radius: 20px;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .status-badge.active {
+    background: rgba(255,184,0,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(255,184,0,0.25);
+  }
+  .status-badge.delivered {
+    background: rgba(255,248,238,0.04);
+    color: rgba(255,248,238,0.4);
+    border: 1px solid rgba(255,248,238,0.08);
+  }
+
+  /* ── PROGRESS STEPPER ── */
+  .stepper {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: .25rem;
+  }
+  .stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .stepper-track {
+    display: flex;
+    align-items: center;
+  }
+  .stepper-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,248,238,0.15);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    transition: background .3s, box-shadow .3s;
+  }
+  .stepper-dot.done {
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(255,184,0,0.35);
+  }
+  .stepper-dot.current {
+    background: var(--fire);
+    box-shadow: 0 0 8px rgba(255,69,0,0.45);
+  }
+  .stepper-line {
+    width: 32px;
+    height: 2px;
+    background: rgba(255,248,238,0.15);
+    flex-shrink: 0;
+  }
+  .stepper-line.done {
+    background: var(--gold);
+  }
+  .stepper-labels {
+    display: flex;
+    margin-top: .45rem;
+  }
+  .stepper-label {
+    font-size: .6rem;
+    color: rgba(255,248,238,0.3);
+    text-align: center;
+    width: 42px;
+    line-height: 1.2;
+    letter-spacing: .3px;
+  }
+  .stepper-label:not(:last-child) {
+    margin-right: 0;
+  }
+  .stepper-label.done,
+  .stepper-label.current {
+    color: rgba(255,248,238,0.7);
+  }
+
+  /* stepper wrapper for proper label alignment */
+  .stepper-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── PAST ORDER ACTIONS ── */
+  .order-actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-top: .15rem;
+  }
+  .btn-reorder {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .85rem;
+    font-size: .75rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gold);
+    background: transparent;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: .3px;
+    transition: all .25s ease;
+    white-space: nowrap;
+  }
+  .btn-reorder:hover {
+    background: var(--gold);
+    color: var(--dark);
+  }
+  .btn-reorder svg {
+    width: 13px;
+    height: 13px;
+  }
+  .link-details {
+    font-size: .75rem;
+    color: rgba(255,248,238,0.4);
+    text-decoration: none;
+    transition: color .2s;
+    white-space: nowrap;
+  }
+  .link-details:hover {
+    color: var(--gold);
+  }
+
+  /* ── EMPTY STATE ── */
+  .acc-empty {
+    color: rgba(255,248,238,0.3);
+    font-size: .9rem;
+    padding: 2rem 0;
+    text-align: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .order-card {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .order-right {
+      align-items: flex-start;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .stepper-wrapper {
+      align-items: flex-start;
+    }
+    .order-thumb {
+      width: 56px;
+      height: 56px;
+    }
+    .order-actions {
+      width: 100%;
+    }
+  }
+
+  /* ── TIMELINE MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal-box {
+    background: linear-gradient(160deg, #1b1612 0%, #0d0a08 100%);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    padding: 2.2rem;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .modal-overlay.open .modal-box {
+    transform: scale(1);
+  }
+  .close-modal {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    color: rgba(255,248,238,0.4);
+    cursor: none;
+    transition: color 0.3s;
+  }
+  .close-modal:hover {
+    color: var(--gold);
+  }
+  
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    text-align: left;
+  }
+  .modal-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255,248,238,0.5);
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  
+  /* Timeline Items */
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-left: 2rem;
+    margin-left: 0.5rem;
+    border-left: 2px solid rgba(255,248,238,0.08);
+    text-align: left;
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.8rem;
+  }
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .timeline-dot {
+    position: absolute;
+    left: calc(-2rem - 6px);
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,248,238,0.15);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  
+  .timeline-dot.done {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(255,184,0,0.5);
+  }
+  
+  .timeline-dot.current {
+    background: var(--fire);
+    box-shadow: 0 0 10px rgba(255,69,0,0.6);
+    animation: timelinePulse 1.5s infinite;
+  }
+  @keyframes timelinePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,69,0,0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(255,69,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,69,0,0); }
+  }
+  
+  .timeline-dot.cancelled {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239,68,68,0.5);
+  }
+  
+  .timeline-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .timeline-status {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: rgba(255,248,238,0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .timeline-status.active {
+    color: var(--cream);
+  }
+  .timeline-time {
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .timeline-desc {
+    font-size: 0.82rem;
+    color: rgba(255,248,238,0.45);
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" class="scrolled">
+  <div class="logo">The<span>.</span>Chicken<span>.</span>Co</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#story">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="cart.html" class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span id="nav-cart-count">0</span>
+    </a>
+    <div class="nav-dropdown-wrapper">
+      <a href="profile.html" class="nav-icon" style="color:var(--gold);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+            <div class="nav-dropdown">
+        <a href="profile.html" class="auth-required">My Profile</a>
+        <a href="orders.html" class="auth-required">My Orders</a>
+        <a href="offers.html" class="auth-required">Offers</a>
+        <a href="login.php" class="auth-hidden">Login</a>
+        <a href="#" class="auth-required logout-btn">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── ORDERS PAGE ── -->
+<section id="account-page">
+  <div class="acc-container" style="max-width:780px;">
+
+    <div class="acc-page-header">
+      <h1>My Orders</h1>
+      <p>Track live orders &amp; revisit your favourites</p>
+    </div>
+
+    <!-- ACTIVE ORDERS -->
+    <div class="orders-section">
+      <div class="orders-section-label">ACTIVE</div>
+      <div id="active-orders-list">
+        <div class="acc-empty">Loading active orders...</div>
+      </div>
+    </div>
+
+    <!-- PAST ORDERS -->
+    <div class="orders-section">
+      <div class="orders-section-label">RECENT</div>
+      <div id="past-orders-list">
+        <div class="acc-empty">Loading recent orders...</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Timeline Modal -->
+<div class="modal-overlay" id="timeline-modal">
+  <div class="modal-box">
+    <button class="close-modal" id="close-timeline-modal">&times;</button>
+    <div class="modal-title" id="modal-order-number">Order Timeline</div>
+    <div class="modal-subtitle" id="modal-order-date">Placed on ...</div>
+    
+    <div class="timeline-container" id="timeline-items-container">
+      <!-- Dynamic timeline items -->
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">The<span>.</span>Chicken<span>.</span>Co</div>
+      <p>Farm-raised, never frozen. Marinated in 14 secret spices for 24 hours. Double fried to legendary crunch.</p>
+      <div class="footer-hours">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Open Daily 11:00 AM – 11:00 PM
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">My Account</a></li>
+        <li><a href="index.html#story">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="mailto:hello@thechickenco.com">hello@thechickenco.com</a></li>
+        <li><a href="tel:+919876543210">+91 98765 43210</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 The Chicken Co. All rights reserved. Made By Aditya ❤️</div>
+  </div>
+</footer>
+
+<script src="assets/cart.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  /* CURSOR */
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animR(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(animR); })();
+  document.querySelectorAll('button,a,input,textarea').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; curR.style.width='54px'; curR.style.height='54px'; curR.style.borderColor='rgba(255,184,0,.65)'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; curR.style.width='36px'; curR.style.height='36px'; curR.style.borderColor='rgba(255,184,0,.45)'; });
+  });
+
+  // ── ORDERS HISTORY LOGIC ──
+  const activeList = document.getElementById('active-orders-list');
+  const pastList = document.getElementById('past-orders-list');
+
+  // Status human-readable name and colors
+  const statusLabels = {
+    pending: { label: 'Pending', type: 'active' },
+    confirmed: { label: 'Confirmed', type: 'active' },
+    preparing: { label: 'Preparing', type: 'active' },
+    out_for_delivery: { label: 'On The Way', type: 'active' },
+    delivered: { label: 'Delivered', type: 'delivered' },
+    cancelled: { label: 'Cancelled', type: 'cancelled' }
+  };
+
+  // Format Date Helper
+  function formatDate(dateStr) {
+    const d = new Date(dateStr.replace(/-/g, '/')); // Handle Safari compatibility
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const dateFormatted = d.toLocaleDateString('en-US', options);
+    let hours = d.getHours();
+    const minutes = d.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    
+    // Check if it's today
+    const today = new Date();
+    if (d.toDateString() === today.toDateString()) {
+      return `Today, ${hours}:${minutesStr} ${ampm}`;
+    }
+    return `${dateFormatted}, ${hours}:${minutesStr} ${ampm}`;
+  }
+
+  // Get active step index (0 to 3) for the stepper
+  function getStepState(status, stepIndex) {
+    const stepsOrder = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered'];
+    const currentIdx = stepsOrder.indexOf(status);
+    
+    // Custom mapping to the 4 UI steps: Confirmed (1), Preparing (2), On The Way (3), Delivered (4)
+    // Map status index to UI step index:
+    // status 'pending' or 'confirmed' -> step 0 (Confirmed)
+    // status 'preparing' -> step 1 (Preparing)
+    // status 'out_for_delivery' -> step 2 (On the way)
+    // status 'delivered' -> step 3 (Delivered)
+    
+    let uiActiveIdx = 0;
+    if (status === 'preparing') uiActiveIdx = 1;
+    if (status === 'out_for_delivery') uiActiveIdx = 2;
+    if (status === 'delivered') uiActiveIdx = 3;
+
+    if (stepIndex < uiActiveIdx) {
+      return 'done';
+    } else if (stepIndex === uiActiveIdx) {
+      return 'current';
+    }
+    return '';
+  }
+
+  // Fetch orders from API
+  async function loadOrders() {
+    try {
+      const res = await fetch('api/orders/history.php');
+      if (res.status === 401) {
+        window.location.href = 'login.php';
+        return;
+      }
+      const data = await res.json();
+      if (!data.success) {
+        activeList.innerHTML = `<div class="acc-empty">Failed to load orders: ${data.message}</div>`;
+        pastList.innerHTML = `<div class="acc-empty">Failed to load orders.</div>`;
+        return;
+      }
+
+      const orders = data.orders || [];
+      if (orders.length === 0) {
+        activeList.innerHTML = `<div class="acc-empty">No active orders. Hungry? <a href="menu.html" style="color:var(--gold);text-decoration:none;">Order Now</a></div>`;
+        pastList.innerHTML = `<div class="acc-empty">No recent orders yet.</div>`;
+        return;
+      }
+
+      let activeHtml = '';
+      let pastHtml = '';
+      let activeCount = 0;
+      let pastCount = 0;
+
+      orders.forEach(order => {
+        const dateStr = formatDate(order.created_at);
+        const statusMeta = statusLabels[order.status] || { label: order.status, type: 'active' };
+        
+        // Build items text list
+        const itemsText = order.items.map(item => {
+          const portion = item.portion_name ? ` (${item.portion_name})` : '';
+          return `${item.item_name}${portion} x${item.quantity}`;
+        }).join(' · ');
+
+        // Find primary image for the order
+        const primaryImage = (order.items[0] && order.items[0].image) || 'assets/chicken_wings_1780138004264.png';
+        const formattedTotal = Math.round(order.total);
+
+        const isActive = ['pending', 'confirmed', 'preparing', 'out_for_delivery'].includes(order.status);
+
+        if (isActive) {
+          activeCount++;
+          // Render Active Order Card with Stepper
+          activeHtml += `
+            <div class="order-card">
+              <img class="order-thumb" src="${primaryImage}" alt="${order.items[0]?.item_name || 'Chicken'}">
+              <div class="order-info">
+                <div class="order-id">Order #${order.order_number}</div>
+                <div class="order-date">${dateStr}</div>
+                <div class="order-items">${itemsText}</div>
+                <div class="order-total">₹${formattedTotal}</div>
+              </div>
+              <div class="order-right">
+                <span class="status-badge active">${statusMeta.label}</span>
+                <div class="stepper-wrapper">
+                  <div class="stepper-track">
+                    <div class="stepper-dot ${getStepState(order.status, 0)}"></div>
+                    <div class="stepper-line ${getStepState(order.status, 1) === 'done' || getStepState(order.status, 1) === 'current' ? 'done' : ''}"></div>
+                    <div class="stepper-dot ${getStepState(order.status, 1)}"></div>
+                    <div class="stepper-line ${getStepState(order.status, 2) === 'done' || getStepState(order.status, 2) === 'current' ? 'done' : ''}"></div>
+                    <div class="stepper-dot ${getStepState(order.status, 2)}"></div>
+                    <div class="stepper-line ${getStepState(order.status, 3) === 'done' || getStepState(order.status, 3) === 'current' ? 'done' : ''}"></div>
+                    <div class="stepper-dot ${getStepState(order.status, 3)}"></div>
+                  </div>
+                  <div class="stepper-labels">
+                    <span class="stepper-label ${getStepState(order.status, 0)}" style="margin-left:-6px;">Confirmed</span>
+                    <span class="stepper-label ${getStepState(order.status, 1)}" style="margin-left:2px;">Preparing</span>
+                    <span class="stepper-label ${getStepState(order.status, 2)}" style="margin-left:2px;">On the way</span>
+                    <span class="stepper-label ${getStepState(order.status, 3)}" style="margin-left:2px;">Delivered</span>
+                  </div>
+                </div>
+                <div style="margin-top: 0.75rem; text-align: right; width: 100%;">
+                  <a href="#" class="link-details" onclick="event.preventDefault(); viewOrderTimeline('${order.order_number}')">Track Live Order →</a>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          pastCount++;
+          // Render Past Order Card with Reorder
+          const serializedItems = encodeURIComponent(JSON.stringify(order.items));
+          const badgeClass = order.status === 'cancelled' ? 'status-badge delivered' : 'status-badge delivered';
+          const badgeStyle = order.status === 'cancelled' ? 'background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2);' : '';
+          
+          pastHtml += `
+            <div class="order-card">
+              <img class="order-thumb" src="${primaryImage}" alt="${order.items[0]?.item_name || 'Chicken'}">
+              <div class="order-info">
+                <div class="order-id">Order #${order.order_number}</div>
+                <div class="order-date">${dateStr}</div>
+                <div class="order-items">${itemsText}</div>
+                <div class="order-total">₹${formattedTotal}</div>
+              </div>
+              <div class="order-right">
+                <span class="${badgeClass}" style="${badgeStyle}">${statusMeta.label}</span>
+                <div class="order-actions">
+                  <button class="btn-reorder" onclick="reorderItems('${serializedItems}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    Reorder
+                  </button>
+                  <a href="#" class="link-details" onclick="event.preventDefault(); viewOrderTimeline('${order.order_number}')">View Details & Timeline</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      activeList.innerHTML = activeCount > 0 ? activeHtml : `<div class="acc-empty">No active orders currently.</div>`;
+      pastList.innerHTML = pastCount > 0 ? pastHtml : `<div class="acc-empty">No recent orders.</div>`;
+
+    } catch (err) {
+      console.error(err);
+      activeList.innerHTML = `<div class="acc-empty">Connection error while loading orders.</div>`;
+      pastList.innerHTML = `<div class="acc-empty">Connection error while loading orders.</div>`;
+    }
+  }
+
+  // Reorder items from past order
+  window.reorderItems = (serializedItems) => {
+    try {
+      const items = JSON.parse(decodeURIComponent(serializedItems));
+      if (!items || items.length === 0) return;
+
+      items.forEach(item => {
+        // Construct the cart item details
+        const portionSuffix = item.portion_name ? `-${item.portion_name}` : '';
+        const cartItemId = `${item.item_id}${portionSuffix}`;
+        const nameWithPortion = item.portion_name ? `${item.item_name} (${item.portion_name})` : item.item_name;
+
+        const cartItem = {
+          id: cartItemId,
+          name: nameWithPortion,
+          price: parseFloat(item.unit_price),
+          image: item.image || 'assets/chicken_wings_1780138004264.png'
+        };
+
+        // Add quantity times
+        for (let i = 0; i < item.quantity; i++) {
+          addToCart(cartItem);
+        }
+      });
+
+      showToast('Items added to cart! Redirecting...');
+      setTimeout(() => {
+        window.location.href = 'cart.html';
+      }, 1200);
+
+    } catch (err) {
+      console.error('Failed to reorder items:', err);
+      alert('Failed to reorder items. Please try adding them manually.');
+    }
+  };
+
+  // ── TIMELINE MODAL LOGIC ──
+  window.viewOrderTimeline = async (orderNum) => {
+    const modal = document.getElementById('timeline-modal');
+    const modalOrderNum = document.getElementById('modal-order-number');
+    const modalOrderDate = document.getElementById('modal-order-date');
+    const container = document.getElementById('timeline-items-container');
+
+    modalOrderNum.textContent = `Order #${orderNum}`;
+    modalOrderDate.textContent = 'Fetching details...';
+    container.innerHTML = '<div style="text-align:center; color:rgba(255,248,238,0.4); padding:2rem 0; font-size:0.9rem;">Loading status timeline...</div>';
+    
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Apply cursor custom scales to close button
+    const closeBtn = document.getElementById('close-timeline-modal');
+    closeBtn.addEventListener('mouseenter', () => {
+      cur.style.width = '18px'; cur.style.height = '18px';
+      curR.style.width = '54px'; curR.style.height = '54px';
+      curR.style.borderColor = 'rgba(255,184,0,.65)';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+      cur.style.width = '10px'; cur.style.height = '10px';
+      curR.style.width = '36px'; curR.style.height = '36px';
+      curR.style.borderColor = 'rgba(255,184,0,.45)';
+    });
+
+    try {
+      const res = await fetch(`api/orders/history.php?order_number=${encodeURIComponent(orderNum)}`);
+      const data = await res.json();
+      
+      if (data.success && data.order) {
+        const order = data.order;
+        const dateStr = formatDate(order.created_at);
+        modalOrderDate.textContent = `Placed on ${dateStr}`;
+        
+        const steps = getTimelineSteps(order);
+        renderTimeline(steps, container);
+      } else {
+        container.innerHTML = '<div style="text-align:center; color:#ef4444; padding:2rem 0; font-size:0.9rem;">Failed to load order.</div>';
+      }
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = '<div style="text-align:center; color:#ef4444; padding:2rem 0; font-size:0.9rem;">Connection error.</div>';
+    }
+  };
+
+  document.getElementById('close-timeline-modal').addEventListener('click', () => {
+    document.getElementById('timeline-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  
+  document.getElementById('timeline-modal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('timeline-modal')) {
+      document.getElementById('timeline-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  function getTimelineSteps(order) {
+    const baseTime = new Date(order.created_at.replace(/-/g, '/'));
+    const status = order.status;
+
+    const addMinutes = (date, mins) => new Date(date.getTime() + mins * 60 * 1000);
+    const formatTimeOnly = (d) => {
+      let hours = d.getHours();
+      const mins = d.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const minsStr = mins < 10 ? '0' + mins : mins;
+      return `${hours}:${minsStr} ${ampm}`;
+    };
+
+    if (status === 'cancelled') {
+      return [
+        {
+          title: 'Order Placed',
+          desc: 'We received your order and queued it.',
+          time: formatTimeOnly(baseTime),
+          state: 'done'
+        },
+        {
+          title: 'Cancelled',
+          desc: 'This order was cancelled.',
+          time: formatTimeOnly(addMinutes(baseTime, 1)),
+          state: 'cancelled'
+        }
+      ];
+    }
+
+    const steps = [
+      {
+        key: 'pending',
+        title: 'Order Placed',
+        desc: 'We received your order and queued it.',
+        time: formatTimeOnly(baseTime)
+      },
+      {
+        key: 'confirmed',
+        title: 'Order Confirmed',
+        desc: 'Kitchen has accepted and confirmed your order.',
+        time: formatTimeOnly(addMinutes(baseTime, 1))
+      },
+      {
+        key: 'preparing',
+        title: 'Preparing Food',
+        desc: 'Chef is frying your chicken fresh to golden perfection.',
+        time: formatTimeOnly(addMinutes(baseTime, 3))
+      },
+      {
+        key: 'out_for_delivery',
+        title: 'Out for Delivery',
+        desc: 'Rider has picked up your food and is rushing to you.',
+        time: formatTimeOnly(addMinutes(baseTime, 5))
+      },
+      {
+        key: 'delivered',
+        title: 'Delivered',
+        desc: 'Crunch time! Order successfully delivered.',
+        time: formatTimeOnly(addMinutes(baseTime, 8))
+      }
+    ];
+
+    const statusSequence = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'delivered'];
+    const currentIdx = statusSequence.indexOf(status);
+
+    steps.forEach((step, idx) => {
+      if (idx < currentIdx) {
+        step.state = 'done';
+      } else if (idx === currentIdx) {
+        step.state = 'current';
+      } else {
+        step.state = 'future';
+        step.time = ''; // Hide time for future steps
+      }
+    });
+
+    return steps;
+  }
+
+  function renderTimeline(steps, container) {
+    container.innerHTML = steps.map(step => {
+      let stateClass = '';
+      let titleClass = '';
+      
+      if (step.state === 'done') {
+        stateClass = 'done';
+        titleClass = 'active';
+      } else if (step.state === 'current') {
+        stateClass = 'current';
+        titleClass = 'active';
+      } else if (step.state === 'cancelled') {
+        stateClass = 'cancelled';
+        titleClass = 'active';
+      }
+
+      return `
+        <div class="timeline-item">
+          <div class="timeline-dot ${stateClass}"></div>
+          <div class="timeline-info">
+            <div class="timeline-status ${titleClass}">
+              <span>${step.title}</span>
+              ${step.time ? `<span class="timeline-time">${step.time}</span>` : ''}
+            </div>
+            <div class="timeline-desc">${step.desc}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  loadOrders();
+</script>
+</body>
+</html>
+
