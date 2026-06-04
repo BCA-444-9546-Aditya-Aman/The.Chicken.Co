@@ -1,0 +1,30 @@
+# Robots.txt for The Chicken Co.
+# Tells search engine crawlers which parts of the site they can access.
+
+User-agent: *
+
+# Allow crawling of the main public pages and frontend assets
+Allow: /
+Allow: /public/index.html
+Allow: /public/menu.html
+Allow: /public/offers.html
+Allow: /public/assets/
+
+# Block administrative panel and backend logic
+Disallow: /admin/
+Disallow: /includes/
+
+# Block database API endpoint directory
+Disallow: /public/api/
+
+# Block personal customer pages (no search engines should index these)
+Disallow: /public/cart.html
+Disallow: /public/checkout.html
+Disallow: /public/confirmation.html
+Disallow: /public/orders.html
+Disallow: /public/profile.html
+Disallow: /public/login.php
+Disallow: /public/register.php
+
+# Reference our XML sitemap (Replace with your actual domain name)
+Sitemap: http://your-domain.infinityfreeapp.com/sitemap.xml
