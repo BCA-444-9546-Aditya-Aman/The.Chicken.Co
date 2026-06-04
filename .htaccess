@@ -1,0 +1,8 @@
+# ── FORCE HTTPS REDIRECTION ──
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── DISABLE DIRECTORY BROWSING ──
+# Prevents users from viewing files in folders like public/assets/ directly
+Options -Indexes
